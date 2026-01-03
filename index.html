@@ -668,23 +668,6 @@
             padding: 4px;
         }
         
-        .share-link-btn {
-            background: none;
-            border: none;
-            color: #acacbe;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .share-link-btn:hover {
-            background-color: rgba(16, 163, 127, 0.1);
-            color: #10a37f;
-        }
-        
         .sidebar-header {
             display: flex;
             justify-content: space-between;
@@ -704,6 +687,22 @@
             background-color: #2d2d30;
             padding: 2px 8px;
             border-radius: 10px;
+        }
+        
+        .title-generating {
+            opacity: 0.7;
+            font-style: italic;
+        }
+        
+        .title-generating::after {
+            content: '...';
+            animation: ellipsis 1.5s infinite;
+        }
+        
+        @keyframes ellipsis {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
         }
     </style>
 </head>
@@ -953,6 +952,28 @@
             return `session_${timestamp}_${randomStr}`;
         }
 
+        // Fungsi untuk generate judul dari jawaban AI
+        async function generateTitleFromAnswer(answer) {
+            try {
+                const systemPrompt = `Buat satu judul singkat (maksimal 5 kata) yang merangkum inti dari jawaban berikut. Aturan: * Gunakan Bahasa Indonesia * Maksimal 5 kata * Tanpa tanda baca * Tanpa emoji * Bukan kalimat lengkap * Fokus pada topik utama Jawaban: ${answer}`;
+                const apiUrl = `https://api.nekolabs.web.id/text.gen/gemini/3-flash?text=${encodeURIComponent(answer)}&systemPrompt=${encodeURIComponent(systemPrompt)}`;
+                
+                console.log('Generating title from answer...');
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log('Title generated:', data.result);
+                    return data.result;
+                } else {
+                    throw new Error('Failed to generate title');
+                }
+            } catch (error) {
+                console.error('Error generating title:', error);
+                return null;
+            }
+        }
+
         // Inisialisasi router
         const router = new HashRouter();
         
@@ -960,6 +981,7 @@
         let currentSessionId = null;
         let currentMessages = [];
         let allChats = JSON.parse(localStorage.getItem('chatHistory')) || {};
+        let isGeneratingTitle = false;
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -1030,10 +1052,16 @@
                 const chat = allChats[sessionId];
                 const historyItem = document.createElement('div');
                 historyItem.className = `history-item ${sessionId === currentSessionId ? 'active' : ''}`;
+                
+                // Tampilkan indikator "generating title" jika sedang dalam proses
+                const titleDisplay = chat.generatingTitle ? 
+                    `<span class="title-generating">Generating title</span>` : 
+                    `<span>${chat.title || 'New Chat'}</span>`;
+                
                 historyItem.innerHTML = `
                     <div class="history-item-content">
                         <i class="fas fa-message"></i>
-                        <span>${chat.title || 'New Chat'}</span>
+                        ${titleDisplay}
                     </div>
                     <div class="history-item-actions">
                         <button class="share-btn" onclick="shareChat('${sessionId}', event)">
@@ -1224,9 +1252,9 @@
                     // Add AI response to chat
                     addMessageToChat(data.result, 'ai', data.timestamp, data.responseTime);
                     
-                    // Update chat title if this is the first message
-                    if (currentMessages.length === 2) {
-                        updateChatTitle(message);
+                    // Generate title for the chat based on AI response (only for first message)
+                    if (currentMessages.length === 2) { // User message + AI response
+                        generateTitleForChat(data.result, message);
                     }
                 } else {
                     throw new Error('API response not successful');
@@ -1240,6 +1268,61 @@
                 
                 // Show error message
                 addMessageToChat('Sorry, I encountered an error. Please try again.', 'ai', new Date().toISOString(), '0ms');
+            }
+        }
+        
+        // Generate title for chat
+        async function generateTitleForChat(aiResponse, userMessage) {
+            if (isGeneratingTitle) return;
+            
+            isGeneratingTitle = true;
+            
+            // Set flag bahwa judul sedang digenerate
+            if (allChats[currentSessionId]) {
+                allChats[currentSessionId].generatingTitle = true;
+                saveChatsToStorage();
+                loadChatHistory();
+            }
+            
+            try {
+                // Generate title from AI response
+                const generatedTitle = await generateTitleFromAnswer(aiResponse);
+                
+                // Jika generate title gagal, gunakan user message sebagai fallback
+                let finalTitle = generatedTitle;
+                if (!finalTitle) {
+                    // Potong user message jika terlalu panjang
+                    finalTitle = userMessage.length > 30 ? 
+                        userMessage.substring(0, 30) + '...' : userMessage;
+                }
+                
+                // Update chat title
+                if (allChats[currentSessionId]) {
+                    allChats[currentSessionId].title = finalTitle;
+                    allChats[currentSessionId].generatingTitle = false;
+                    allChats[currentSessionId].timestamp = Date.now();
+                    saveChatsToStorage();
+                    
+                    // Update UI
+                    loadChatHistory();
+                    
+                    showToast('Chat title generated');
+                }
+            } catch (error) {
+                console.error('Error generating title:', error);
+                
+                // Fallback: use user message as title
+                if (allChats[currentSessionId]) {
+                    const fallbackTitle = userMessage.length > 30 ? 
+                        userMessage.substring(0, 30) + '...' : userMessage;
+                    allChats[currentSessionId].title = fallbackTitle;
+                    allChats[currentSessionId].generatingTitle = false;
+                    allChats[currentSessionId].timestamp = Date.now();
+                    saveChatsToStorage();
+                    loadChatHistory();
+                }
+            } finally {
+                isGeneratingTitle = false;
             }
         }
         
@@ -1264,9 +1347,10 @@
             if (currentMessages.length === 1 && sender === 'user') {
                 // Buat entry baru di allChats untuk chat non-kosong
                 allChats[currentSessionId] = {
-                    title: message.length > 30 ? message.substring(0, 30) + '...' : message,
+                    title: 'New Chat', // Temporary title
                     timestamp: Date.now(),
-                    messages: []
+                    messages: [],
+                    generatingTitle: false
                 };
             }
             
@@ -1278,7 +1362,7 @@
                 // Save to localStorage
                 saveChatsToStorage();
                 
-                // Update UI
+                // Update UI (tapi judul mungkin masih "Generating title")
                 loadChatHistory();
             }
             
@@ -1287,16 +1371,6 @@
             
             // Display messages
             displayMessages();
-        }
-        
-        // Update chat title
-        function updateChatTitle(firstMessage) {
-            if (allChats[currentSessionId]) {
-                allChats[currentSessionId].title = firstMessage.length > 30 ? 
-                    firstMessage.substring(0, 30) + '...' : firstMessage;
-                saveChatsToStorage();
-                loadChatHistory();
-            }
         }
         
         // Display all messages
@@ -1507,6 +1581,28 @@
         window.addEventListener('beforeunload', function() {
             saveChatsToStorage();
         });
+        
+        // Manually trigger title generation for existing chats without titles
+        function fixMissingTitles() {
+            Object.keys(allChats).forEach(sessionId => {
+                const chat = allChats[sessionId];
+                if (chat && chat.messages && chat.messages.length > 0 && 
+                    (!chat.title || chat.title === 'New Chat') && !chat.generatingTitle) {
+                    
+                    // Cari pesan AI pertama
+                    const firstAiMessage = chat.messages.find(m => m.sender === 'ai');
+                    const firstUserMessage = chat.messages.find(m => m.sender === 'user');
+                    
+                    if (firstAiMessage && firstUserMessage) {
+                        console.log('Fixing missing title for chat:', sessionId);
+                        generateTitleForChat(firstAiMessage.content, firstUserMessage.content);
+                    }
+                }
+            });
+        }
+        
+        // Run title fix on startup
+        setTimeout(fixMissingTitles, 2000);
     </script>
 </body>
 </html>
