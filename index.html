@@ -153,20 +153,6 @@
             background-color: #D70015;
         }
         
-        .btn-image {
-            background: linear-gradient(135deg, #34C759 0%, #2AA44F 100%);
-            color: white;
-        }
-        
-        .btn-image:hover {
-            background: linear-gradient(135deg, #2AA44F 0%, #1E8E3E 100%);
-        }
-        
-        .btn-image.active {
-            background: linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%);
-            box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.3);
-        }
-        
         .btn-small {
             padding: 6px 12px;
             font-size: 0.85rem;
@@ -269,6 +255,7 @@
             position: relative;
             max-height: 40px;
             min-height: 40px;
+            overflow: hidden;
         }
         
         .history-item-content {
@@ -278,55 +265,62 @@
             flex: 1;
             overflow: hidden;
             min-width: 0;
+            height: 100%;
+        }
+        
+        /* Marquee Animation untuk judul panjang */
+        .history-item-text-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            height: 20px;
         }
         
         .history-item-text {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            position: absolute;
             white-space: nowrap;
+            transition: transform 0.3s ease;
             padding-right: 8px;
+            display: inline-block;
+            max-width: 100%;
         }
         
-        /* Tooltip for full title preview */
-        .history-item-tooltip {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s, visibility 0.2s;
-            margin-bottom: 8px;
-            pointer-events: none;
-            backdrop-filter: blur(10px);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            max-width: 250px;
+        .history-item-text.static {
             overflow: hidden;
             text-overflow: ellipsis;
+            position: relative;
+            width: 100%;
         }
         
-        .history-item-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 5px;
-            border-style: solid;
-            border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+        .history-item-text.marquee {
+            animation: marquee 10s linear infinite;
+            animation-play-state: paused;
+            padding-right: 30px;
         }
         
-        .history-item:hover .history-item-tooltip {
-            opacity: 1;
-            visibility: visible;
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(-100% + 100px));
+            }
+        }
+        
+        .history-item:hover .history-item-text.marquee {
+            animation-play-state: running;
+        }
+        
+        .history-item:hover .history-item-text.static {
+            display: none;
+        }
+        
+        .history-item:not(:hover) .history-item-text.marquee {
+            display: none;
+        }
+        
+        .history-item:not(:hover) .history-item-text.static {
+            display: block;
         }
         
         .history-item:hover {
@@ -346,6 +340,7 @@
             justify-content: center;
             width: 24px;
             height: 24px;
+            flex-shrink: 0;
         }
         
         .more-actions-btn {
@@ -780,35 +775,6 @@
             box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
         }
         
-        /* Image Mode Indicator */
-        .input-mode-indicator {
-            position: absolute;
-            top: -28px;
-            left: 0;
-            background: linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 8px rgba(255, 149, 0, 0.2);
-            animation: slideDown 0.3s ease;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         /* iOS Style Send Button - Round and Fixed at Bottom */
         .send-button {
             width: 44px;
@@ -844,7 +810,12 @@
             box-shadow: none;
         }
         
-        /* Image Generate Button */
+        /* Image Generate Dropdown */
+        .image-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
         .image-generate-button {
             width: 44px;
             height: 44px;
@@ -882,6 +853,116 @@
         .image-generate-button.active {
             background: linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%);
             box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: #FFFFFF;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            display: none;
+            flex-direction: column;
+            min-width: 180px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            z-index: 1000;
+            margin-bottom: 8px;
+            animation: dropdownAppear 0.2s ease;
+        }
+        
+        @keyframes dropdownAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-menu.show {
+            display: flex;
+        }
+        
+        .dropdown-item {
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            color: #000000;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #F2F2F7;
+        }
+        
+        .dropdown-item.active {
+            background-color: #E5F2FF;
+            color: #007AFF;
+        }
+        
+        .dropdown-item i {
+            font-size: 0.9rem;
+            width: 18px;
+            text-align: center;
+        }
+        
+        .dropdown-divider {
+            height: 0.5px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 4px 0;
+        }
+        
+        .sub-dropdown {
+            position: relative;
+        }
+        
+        .sub-dropdown-menu {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            background-color: #FFFFFF;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            display: none;
+            flex-direction: column;
+            min-width: 150px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            z-index: 1001;
+            margin-left: 4px;
+        }
+        
+        .sub-dropdown:hover .sub-dropdown-menu {
+            display: flex;
+        }
+        
+        .dropdown-item .arrow {
+            margin-left: auto;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+        
+        .model-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background-color: #F2F2F7;
+            color: #8E8E93;
+            margin-left: auto;
+        }
+        
+        .model-badge.active {
+            background-color: #E5F2FF;
+            color: #007AFF;
         }
         
         .input-footer {
@@ -1314,6 +1395,31 @@
                 margin-bottom: 0;
             }
             
+            .dropdown-menu {
+                min-width: 160px;
+                left: 0;
+                right: auto;
+            }
+            
+            .sub-dropdown-menu {
+                left: 100%;
+                right: auto;
+            }
+            
+            /* Adjust marquee animation for mobile */
+            .history-item-text.marquee {
+                animation: marquee 8s linear infinite;
+            }
+            
+            @keyframes marquee {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(calc(-100% + 80px));
+                }
+            }
+            
             .input-footer {
                 font-size: 0.7rem;
             }
@@ -1396,6 +1502,28 @@
             .actions-dropdown {
                 min-width: 100px;
                 right: -10px;
+            }
+            
+            .dropdown-menu {
+                min-width: 140px;
+            }
+            
+            .sub-dropdown-menu {
+                min-width: 120px;
+            }
+            
+            /* Adjust marquee animation for small mobile */
+            .history-item-text.marquee {
+                animation: marquee 6s linear infinite;
+            }
+            
+            @keyframes marquee {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(calc(-100% + 60px));
+                }
             }
         }
         
@@ -1665,28 +1793,47 @@
                 background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
             }
             
-            /* Tooltip dark mode */
-            .history-item-tooltip {
-                background-color: rgba(0, 0, 0, 0.9);
+            /* Dropdown dark mode */
+            .dropdown-menu {
+                background-color: rgba(44, 44, 46, 0.95);
+                border-color: rgba(255, 255, 255, 0.1);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             }
             
-            .history-item-tooltip::after {
-                border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+            .dropdown-item {
+                color: #FFFFFF;
+            }
+            
+            .dropdown-item:hover {
+                background-color: rgba(58, 58, 60, 0.8);
+            }
+            
+            .dropdown-item.active {
+                background-color: rgba(10, 132, 255, 0.2);
+                color: #0A84FF;
+            }
+            
+            .sub-dropdown-menu {
+                background-color: rgba(44, 44, 46, 0.95);
+                border-color: rgba(255, 255, 255, 0.1);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            }
+            
+            .dropdown-divider {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .model-badge {
+                background-color: rgba(58, 58, 60, 0.8);
+                color: #8E8E93;
+            }
+            
+            .model-badge.active {
+                background-color: rgba(10, 132, 255, 0.2);
+                color: #0A84FF;
             }
             
             /* Image button dark mode */
-            .btn-image {
-                background: linear-gradient(135deg, #32D74B 0%, #2AA44F 100%);
-            }
-            
-            .btn-image:hover {
-                background: linear-gradient(135deg, #2AA44F 0%, #1E8E3E 100%);
-            }
-            
-            .btn-image.active {
-                background: linear-gradient(135deg, #FF9F0A 0%, #FF6B35 100%);
-            }
-            
             .image-generate-button {
                 background: linear-gradient(135deg, #32D74B 0%, #2AA44F 100%);
             }
@@ -1695,13 +1842,18 @@
                 background: linear-gradient(135deg, #FF9F0A 0%, #FF6B35 100%);
             }
             
-            .input-mode-indicator {
-                background: linear-gradient(135deg, #FF9F0A 0%, #FF6B35 100%);
-            }
-            
             .image-info {
                 background-color: rgba(255, 255, 255, 0.05);
                 color: #8E8E93;
+            }
+            
+            /* Marquee text in dark mode */
+            .history-item-text.static {
+                color: #FFFFFF;
+            }
+            
+            .history-item-text.marquee {
+                color: #FFFFFF;
             }
         }
         
@@ -1725,6 +1877,13 @@
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
+            
+            .history-item-text.marquee {
+                animation: none !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         }
     </style>
 </head>
@@ -1742,10 +1901,6 @@
             </a>
         </div>
         <div class="header-actions">
-            <button class="btn btn-image" id="toggleImageModeBtn" onclick="toggleImageMode()">
-                <i class="fas fa-image"></i>
-                <span>Image Mode</span>
-            </button>
             <button class="btn btn-secondary" onclick="newChat()">
                 <i class="fas fa-plus"></i>
                 <span>New Chat</span>
@@ -1788,7 +1943,7 @@
                     <i class="fas fa-robot"></i> Hello, I'm Chat AI
                 </div>
                 <div class="welcome-subtitle">
-                    Ask me anything! I can help with explanations, code, writing, analysis, and more. Or click "Image Mode" to generate images!
+                    Ask me anything! I can help with explanations, code, writing, analysis, and more. Or click the image button to generate images!
                 </div>
                 
                 <div class="suggestions-grid">
@@ -1840,9 +1995,35 @@
             
             <div class="chat-input-container">
                 <div class="input-wrapper">
-                    <button class="image-generate-button" id="imageGenerateButton" onclick="generateImage()" aria-label="Generate image">
-                        <i class="fas fa-image"></i>
-                    </button>
+                    <div class="image-dropdown">
+                        <button class="image-generate-button" id="imageGenerateButton" aria-label="Generate image options">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <div class="dropdown-menu" id="imageDropdownMenu">
+                            <div class="dropdown-item sub-dropdown" id="generateImageOption">
+                                <i class="fas fa-paint-brush"></i>
+                                <span>Generate Image</span>
+                                <span class="arrow">▶</span>
+                                <div class="sub-dropdown-menu" id="imageModelMenu">
+                                    <div class="dropdown-item" onclick="selectImageModel('imagen-v3')">
+                                        <i class="fas fa-cube"></i>
+                                        <span>Imagen-v3</span>
+                                        <span class="model-badge" id="v3Badge">Fast</span>
+                                    </div>
+                                    <div class="dropdown-item active" onclick="selectImageModel('imagen-v4')">
+                                        <i class="fas fa-cubes"></i>
+                                        <span>Imagen-v4</span>
+                                        <span class="model-badge active" id="v4Badge">Default</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item" onclick="showImageSettings()">
+                                <i class="fas fa-cog"></i>
+                                <span>Image Settings</span>
+                            </div>
+                        </div>
+                    </div>
                     <textarea 
                         class="chat-input" 
                         id="messageInput" 
@@ -1901,6 +2082,51 @@
                 </button>
                 <button class="btn btn-danger" id="confirmDeleteBtn">
                     <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Settings Modal -->
+    <div class="modal" id="imageSettingsModal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <i class="fas fa-cog"></i>
+                Image Generation Settings
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label for="imageRatioSelect">Aspect Ratio</label>
+                    <select class="modal-input" id="imageRatioSelect">
+                        <option value="1:1">1:1 (Square)</option>
+                        <option value="4:3">4:3 (Standard)</option>
+                        <option value="16:9" selected>16:9 (Widescreen)</option>
+                        <option value="9:16">9:16 (Portrait)</option>
+                        <option value="3:2">3:2 (Classic)</option>
+                        <option value="2:3">2:3 (Vertical)</option>
+                    </select>
+                </div>
+                <div class="setting-item" style="margin-top: 1rem;">
+                    <label for="imageQualitySelect">Image Quality</label>
+                    <select class="modal-input" id="imageQualitySelect">
+                        <option value="fast">Fast (Quick generation)</option>
+                        <option value="standard" selected>Standard (Balanced)</option>
+                        <option value="high">High (Better quality)</option>
+                    </select>
+                </div>
+                <div class="setting-item" style="margin-top: 1rem;">
+                    <label>Selected Model: <span id="currentModelDisplay">Imagen-v4</span></label>
+                    <div class="model-info" style="font-size: 0.8rem; color: #8E8E93; margin-top: 4px;">
+                        <span id="modelDescription">Latest version with improved quality and details</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeImageSettings()">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" onclick="saveImageSettings()">
+                    <i class="fas fa-save"></i> Save Settings
                 </button>
             </div>
         </div>
@@ -2014,7 +2240,11 @@
         let isSidebarOpen = false;
         let isSidebarCollapsed = false;
         let activeActionDropdown = null;
-        let imageMode = false; // Mode untuk generate gambar
+        let selectedImageModel = 'imagen-v4'; // Default model
+        let imageSettings = {
+            ratio: '16:9',
+            quality: 'standard'
+        };
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -2023,6 +2253,9 @@
             
             // Initialize sidebar toggle
             initSidebarToggle();
+            
+            // Initialize dropdowns
+            initDropdowns();
             
             // Focus on input
             document.getElementById('messageInput').focus();
@@ -2043,11 +2276,30 @@
                 toggleSidebar();
             }
             
+            // Load image settings from localStorage
+            const savedImageSettings = localStorage.getItem('imageSettings');
+            if (savedImageSettings) {
+                imageSettings = JSON.parse(savedImageSettings);
+                updateImageSettingsUI();
+            }
+            
+            // Load selected model from localStorage
+            const savedModel = localStorage.getItem('selectedImageModel');
+            if (savedModel) {
+                selectedImageModel = savedModel;
+                updateSelectedModelUI();
+            }
+            
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 if (activeActionDropdown && !e.target.closest('.history-item-actions')) {
                     activeActionDropdown.classList.remove('active');
                     activeActionDropdown = null;
+                }
+                
+                // Close image dropdown when clicking outside
+                if (!e.target.closest('.image-dropdown')) {
+                    closeImageDropdown();
                 }
             });
             
@@ -2057,10 +2309,12 @@
                     activeActionDropdown.classList.remove('active');
                     activeActionDropdown = null;
                 }
+                
+                // Close image dropdown with escape key
+                if (e.key === 'Escape') {
+                    closeImageDropdown();
+                }
             });
-            
-            // Initialize image mode indicator
-            updateImageModeUI();
         });
         
         // Initialize sidebar toggle
@@ -2086,6 +2340,39 @@
                     toggleSidebar();
                 }
             });
+        }
+        
+        // Initialize dropdowns
+        function initDropdowns() {
+            const imageGenerateButton = document.getElementById('imageGenerateButton');
+            const imageDropdownMenu = document.getElementById('imageDropdownMenu');
+            
+            // Toggle image dropdown
+            imageGenerateButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                imageDropdownMenu.classList.toggle('show');
+                
+                // Close other dropdowns
+                if (activeActionDropdown) {
+                    activeActionDropdown.classList.remove('active');
+                    activeActionDropdown = null;
+                }
+            });
+            
+            // Prevent sub-dropdown from closing when clicking inside
+            document.getElementById('generateImageOption').addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            document.getElementById('imageModelMenu').addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+        
+        // Close image dropdown
+        function closeImageDropdown() {
+            const imageDropdownMenu = document.getElementById('imageDropdownMenu');
+            imageDropdownMenu.classList.remove('show');
         }
         
         // Toggle sidebar visibility
@@ -2198,6 +2485,9 @@
                 activeActionDropdown = null;
             }
             
+            // Close image dropdown
+            closeImageDropdown();
+            
             // Load messages untuk session ini
             if (allChats[sessionId] && allChats[sessionId].messages && allChats[sessionId].messages.length > 0) {
                 currentMessages = allChats[sessionId].messages;
@@ -2218,7 +2508,7 @@
             }
         }
         
-        // Load and display chat history
+        // Load and display chat history with marquee animation
         function loadChatHistory() {
             const chatHistoryEl = document.getElementById('chatHistory');
             chatHistoryEl.innerHTML = '';
@@ -2250,17 +2540,24 @@
                 historyItem.dataset.sessionId = sessionId;
                 
                 // Tampilkan indikator "generating title" jika sedang dalam proses
-                const titleDisplay = chat.generatingTitle ? 
-                    `<span class="title-generating">Generating title</span>` : 
-                    `<span>${chat.title || 'New Chat'}</span>`;
+                const titleText = chat.title || 'New Chat';
+                const isGenerating = chat.generatingTitle;
+                
+                // Cek jika teks perlu marquee (lebih panjang dari 20 karakter)
+                const needsMarquee = titleText.length > 20;
                 
                 historyItem.innerHTML = `
                     <div class="history-item-content">
                         <i class="fas fa-message"></i>
-                        <div class="history-item-text">
-                            ${titleDisplay}
+                        <div class="history-item-text-container">
+                            ${isGenerating ? 
+                                `<div class="history-item-text static title-generating">Generating title</div>` :
+                                needsMarquee ? 
+                                    `<div class="history-item-text static">${titleText}</div>
+                                     <div class="history-item-text marquee">${titleText}</div>` :
+                                    `<div class="history-item-text static">${titleText}</div>`
+                            }
                         </div>
-                        <div class="history-item-tooltip">${chat.title || 'New Chat'}</div>
                     </div>
                     <div class="history-item-actions">
                         <button class="more-actions-btn" onclick="toggleActionsDropdown(event, '${sessionId}')" aria-label="More actions">
@@ -2307,6 +2604,9 @@
                 activeActionDropdown.classList.remove('active');
             }
             
+            // Close image dropdown
+            closeImageDropdown();
+            
             // Toggle current dropdown
             actionsContainer.classList.toggle('active');
             
@@ -2324,6 +2624,9 @@
                 activeActionDropdown.classList.remove('active');
                 activeActionDropdown = null;
             }
+            
+            // Close image dropdown
+            closeImageDropdown();
             
             router.navigateToNewChat();
         }
@@ -2350,6 +2653,9 @@
                 activeActionDropdown = null;
             }
             
+            // Close image dropdown
+            closeImageDropdown();
+            
             const chatTitle = allChats[sessionId].title || 'Chat';
             showDeleteModal(sessionId, chatTitle, sessionId === currentSessionId);
         }
@@ -2371,6 +2677,9 @@
                 activeActionDropdown.classList.remove('active');
                 activeActionDropdown = null;
             }
+            
+            // Close image dropdown
+            closeImageDropdown();
             
             showDeleteAllModal(chatsWithMessages.length);
         }
@@ -2490,18 +2799,15 @@
             
             if (!message) return;
             
-            // Jika dalam mode gambar, generate gambar
-            if (imageMode) {
-                generateImage();
-                return;
-            }
-            
             // Add user message to chat
             addMessageToChat(message, 'user');
             
             // Clear input
             inputEl.value = '';
             inputEl.style.height = 'auto';
+            
+            // Close image dropdown
+            closeImageDropdown();
             
             // Show typing indicator
             showTypingIndicator();
@@ -2560,16 +2866,28 @@
             inputEl.value = '';
             inputEl.style.height = 'auto';
             
+            // Close image dropdown
+            closeImageDropdown();
+            
             // Show image generating indicator
             showImageGeneratingIndicator();
             
             try {
                 // Encode prompt untuk URL
                 const encodedPrompt = encodeURIComponent(prompt);
-                // Gunakan ratio 16:9 sebagai default
-                const apiUrl = `https://api.nekolabs.web.id/image.gen/imagen/4.0-fast?prompt=${encodedPrompt}&ratio=16%3A9`;
+                
+                // Tentukan API URL berdasarkan model yang dipilih
+                let apiUrl;
+                if (selectedImageModel === 'imagen-v3') {
+                    apiUrl = `https://api.nekolabs.web.id/image.gen/imagen/3.0-fast?prompt=${encodedPrompt}&ratio=${encodeURIComponent(imageSettings.ratio)}`;
+                } else {
+                    // Default ke v4
+                    apiUrl = `https://api.nekolabs.web.id/image.gen/imagen/4.0-fast?prompt=${encodedPrompt}&ratio=${encodeURIComponent(imageSettings.ratio)}`;
+                }
                 
                 console.log('Generating image with URL:', apiUrl);
+                console.log('Using model:', selectedImageModel);
+                console.log('Settings:', imageSettings);
                 
                 // Send request to API
                 const response = await fetch(apiUrl);
@@ -2586,12 +2904,15 @@
                     const responseTime = data.responseTime || '0ms';
                     
                     // Tambahkan pesan dengan gambar
-                    addImageMessageToChat(imageUrl, prompt, timestamp, responseTime);
+                    addImageMessageToChat(imageUrl, prompt, timestamp, responseTime, selectedImageModel);
                     
                     // Generate title for the chat based on prompt (only for first message)
                     if (currentMessages.length === 2) { // User message + Image response
                         generateTitleForChat(prompt, prompt);
                     }
+                    
+                    // Show success toast
+                    showToast(`Image generated successfully with ${selectedImageModel}!`, false, 'success');
                 } else {
                     throw new Error('API response not successful');
                 }
@@ -2604,7 +2925,75 @@
                 
                 // Show error message
                 addMessageToChat('Sorry, I encountered an error while generating the image. Please try again.', 'ai', new Date().toISOString(), '0ms');
+                
+                // Show error toast
+                showToast('Failed to generate image. Please try again.', true);
             }
+        }
+        
+        // Select image model
+        function selectImageModel(model) {
+            selectedImageModel = model;
+            
+            // Update UI
+            updateSelectedModelUI();
+            
+            // Close dropdown
+            closeImageDropdown();
+            
+            // Generate image if there's a prompt in the input
+            const inputEl = document.getElementById('messageInput');
+            const prompt = inputEl.value.trim();
+            
+            if (prompt) {
+                // Tampilkan konfirmasi
+                if (confirm(`Generate image with ${model}?`)) {
+                    generateImage();
+                }
+            } else {
+                showToast(`Image model set to ${model}. Enter a prompt and click generate.`, false, 'success');
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('selectedImageModel', model);
+        }
+        
+        // Update selected model UI
+        function updateSelectedModelUI() {
+            // Update badges
+            const v3Badge = document.getElementById('v3Badge');
+            const v4Badge = document.getElementById('v4Badge');
+            const v3Item = document.querySelector('.dropdown-item[onclick*="imagen-v3"]');
+            const v4Item = document.querySelector('.dropdown-item[onclick*="imagen-v4"]');
+            
+            // Reset all
+            v3Badge.classList.remove('active');
+            v3Badge.textContent = 'Fast';
+            v3Item.classList.remove('active');
+            
+            v4Badge.classList.remove('active');
+            v4Badge.textContent = 'Default';
+            v4Item.classList.remove('active');
+            
+            // Update based on selection
+            if (selectedImageModel === 'imagen-v3') {
+                v3Badge.classList.add('active');
+                v3Badge.textContent = 'Selected';
+                v3Item.classList.add('active');
+            } else {
+                v4Badge.classList.add('active');
+                v4Badge.textContent = 'Selected';
+                v4Item.classList.add('active');
+            }
+            
+            // Update settings modal display
+            document.getElementById('currentModelDisplay').textContent = 
+                selectedImageModel === 'imagen-v3' ? 'Imagen-v3' : 'Imagen-v4';
+            
+            document.getElementById('modelDescription').textContent = 
+                selectedImageModel === 'imagen-v3' ? 
+                'Previous version with good performance' : 
+                'Latest version with improved quality and details';
         }
         
         // Generate title for chat
@@ -2718,14 +3107,15 @@
         }
         
         // Add image message to chat
-        function addImageMessageToChat(imageUrl, prompt, timestamp = null, responseTime = null) {
+        function addImageMessageToChat(imageUrl, prompt, timestamp = null, responseTime = null, model = 'imagen-v4') {
             const messageObj = {
                 sender: 'ai',
                 content: imageUrl,
                 prompt: prompt,
                 timestamp: timestamp || new Date().toISOString(),
                 responseTime,
-                type: 'image'
+                type: 'image',
+                model: model
             };
             
             currentMessages.push(messageObj);
@@ -2789,10 +3179,12 @@
                     }
                 } else if (message.type === 'image') {
                     // Render gambar
+                    const modelInfo = message.model ? ` (${message.model})` : '';
                     contentHtml = `
                         <img src="${message.content}" alt="Generated image: ${message.prompt || 'AI Generated Image'}" class="generated-image">
                         <div class="image-info">
                             <div><strong>Prompt:</strong> ${message.prompt || 'No prompt available'}</div>
+                            <div><strong>Model:</strong> ${message.model || 'Imagen-v4'}</div>
                             <div><strong>Generated:</strong> ${timeDisplay}</div>
                         </div>
                     `;
@@ -2807,6 +3199,7 @@
                         <div class="message-info">
                             <span>${senderName} • ${timeDisplay}</span>
                             ${message.responseTime ? `<span>• ${message.responseTime}</span>` : ''}
+                            ${message.type === 'image' && message.model ? `<span>• ${message.model}</span>` : ''}
                         </div>
                         ${message.sender === 'ai' ? `
                         <div class="message-actions">
@@ -2881,7 +3274,7 @@
                 </div>
                 <div class="message-content">
                     <div class="message-text">
-                        <p>Generating image... <i class="fas fa-spinner fa-spin"></i></p>
+                        <p><i class="fas fa-spinner fa-spin"></i> Generating image with ${selectedImageModel}...</p>
                     </div>
                 </div>
             `;
@@ -2905,19 +3298,54 @@
             }
         }
         
-        // Copy message to clipboard
+        // Copy message to clipboard - FIXED VERSION
         function copyMessage(messageIndex) {
             const message = currentMessages[messageIndex];
             if (message) {
-                let textToCopy = message.content;
+                let textToCopy = '';
+                
                 if (message.type === 'image' && message.prompt) {
+                    // Untuk gambar, copy prompt
                     textToCopy = message.prompt;
+                } else if (message.type === 'text') {
+                    // Untuk teks AI, gunakan content asli (bukan HTML)
+                    if (message.sender === 'ai') {
+                        // Gunakan content asli dari objek message
+                        textToCopy = message.content;
+                    } else {
+                        // Untuk pesan user
+                        textToCopy = message.content;
+                    }
+                } else {
+                    // Fallback
+                    textToCopy = message.content || '';
                 }
+                
+                // Hapus HTML tags jika ada
+                textToCopy = textToCopy.replace(/<[^>]*>/g, '');
+                
+                // Decode HTML entities
+                const textarea = document.createElement('textarea');
+                textarea.innerHTML = textToCopy;
+                textToCopy = textarea.value;
+                
                 navigator.clipboard.writeText(textToCopy).then(() => {
-                    showToast('Copied to clipboard!');
+                    showToast('Message copied to clipboard!', false, 'success');
                 }).catch(err => {
                     console.error('Failed to copy:', err);
-                    showToast('Failed to copy message', true);
+                    // Fallback method untuk browser yang tidak support clipboard API
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = textToCopy;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        showToast('Message copied to clipboard!', false, 'success');
+                    } catch (fallbackErr) {
+                        console.error('Fallback copy failed:', fallbackErr);
+                        showToast('Failed to copy message', true);
+                    }
                 });
             }
         }
@@ -2957,6 +3385,9 @@
                 activeActionDropdown = null;
             }
             
+            // Close image dropdown
+            closeImageDropdown();
+            
             const shareUrl = getChatUrl(sessionId);
             document.getElementById('shareUrlInput').value = shareUrl;
             document.getElementById('shareModal').classList.add('active');
@@ -2976,17 +3407,60 @@
             shareUrlInput.setSelectionRange(0, 99999); // For mobile devices
             
             navigator.clipboard.writeText(shareUrlInput.value).then(() => {
-                showToast('Chat URL copied to clipboard!');
+                showToast('Chat URL copied to clipboard!', false, 'success');
                 closeShareModal();
             }).catch(err => {
                 console.error('Failed to copy:', err);
-                showToast('Failed to copy URL', true);
+                // Fallback method
+                try {
+                    document.execCommand('copy');
+                    showToast('Chat URL copied to clipboard!', false, 'success');
+                    closeShareModal();
+                } catch (fallbackErr) {
+                    console.error('Fallback copy failed:', fallbackErr);
+                    showToast('Failed to copy URL', true);
+                }
             });
         }
         
         // Close share modal
         function closeShareModal() {
             document.getElementById('shareModal').classList.remove('active');
+        }
+        
+        // Show image settings modal
+        function showImageSettings() {
+            closeImageDropdown();
+            document.getElementById('imageSettingsModal').classList.add('active');
+        }
+        
+        // Close image settings modal
+        function closeImageSettings() {
+            document.getElementById('imageSettingsModal').classList.remove('active');
+        }
+        
+        // Save image settings
+        function saveImageSettings() {
+            const ratioSelect = document.getElementById('imageRatioSelect');
+            const qualitySelect = document.getElementById('imageQualitySelect');
+            
+            imageSettings.ratio = ratioSelect.value;
+            imageSettings.quality = qualitySelect.value;
+            
+            // Save to localStorage
+            localStorage.setItem('imageSettings', JSON.stringify(imageSettings));
+            
+            closeImageSettings();
+            showToast('Image settings saved!', false, 'success');
+        }
+        
+        // Update image settings UI
+        function updateImageSettingsUI() {
+            const ratioSelect = document.getElementById('imageRatioSelect');
+            const qualitySelect = document.getElementById('imageQualitySelect');
+            
+            ratioSelect.value = imageSettings.ratio;
+            qualitySelect.value = imageSettings.quality;
         }
         
         // Show toast notification
@@ -3035,64 +3509,6 @@
             textarea.style.height = newHeight + 'px';
         }
         
-        // Toggle image mode
-        function toggleImageMode() {
-            imageMode = !imageMode;
-            updateImageModeUI();
-            
-            if (imageMode) {
-                showToast('Image mode activated! Enter a prompt and click the image button or press Enter.', false, 'warning');
-                document.getElementById('messageInput').placeholder = "Describe the image you want to generate...";
-            } else {
-                showToast('Text mode activated', false, 'success');
-                document.getElementById('messageInput').placeholder = "Message Chat AI...";
-            }
-        }
-        
-        // Update image mode UI
-        function updateImageModeUI() {
-            const toggleBtn = document.getElementById('toggleImageModeBtn');
-            const imageBtn = document.getElementById('imageGenerateButton');
-            const inputWrapper = document.querySelector('.input-wrapper');
-            
-            if (imageMode) {
-                // Aktifkan mode gambar
-                toggleBtn.classList.add('active');
-                imageBtn.classList.add('active');
-                
-                // Update teks tombol
-                toggleBtn.innerHTML = '<i class="fas fa-font"></i><span>Text Mode</span>';
-                
-                // Tambah indikator mode gambar
-                let indicator = document.querySelector('.input-mode-indicator');
-                if (!indicator) {
-                    indicator = document.createElement('div');
-                    indicator.className = 'input-mode-indicator';
-                    inputWrapper.prepend(indicator);
-                }
-                indicator.innerHTML = '<i class="fas fa-image"></i> Image Generation Mode';
-                
-                // Update placeholder input
-                document.getElementById('messageInput').placeholder = "Describe the image you want to generate...";
-            } else {
-                // Nonaktifkan mode gambar
-                toggleBtn.classList.remove('active');
-                imageBtn.classList.remove('active');
-                
-                // Update teks tombol
-                toggleBtn.innerHTML = '<i class="fas fa-image"></i><span>Image Mode</span>';
-                
-                // Hapus indikator mode gambar
-                const indicator = document.querySelector('.input-mode-indicator');
-                if (indicator) {
-                    indicator.remove();
-                }
-                
-                // Update placeholder input
-                document.getElementById('messageInput').placeholder = "Message Chat AI...";
-            }
-        }
-        
         // Handle clicks outside modals to close them
         document.getElementById('shareModal').addEventListener('click', function(e) {
             if (e.target === this) {
@@ -3103,6 +3519,12 @@
         document.getElementById('deleteModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDeleteModal();
+            }
+        });
+        
+        document.getElementById('imageSettingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageSettings();
             }
         });
         
@@ -3126,16 +3548,17 @@
                 toggleSidebar();
             }
             
-            // Ctrl/Cmd + I untuk toggle image mode
-            if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+            // Ctrl/Cmd + G untuk generate image
+            if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
                 e.preventDefault();
-                toggleImageMode();
+                generateImage();
             }
             
             // Escape untuk close modals dan sidebar
             if (e.key === 'Escape') {
                 closeShareModal();
                 closeDeleteModal();
+                closeImageSettings();
                 
                 // Close active dropdown
                 if (activeActionDropdown) {
@@ -3143,15 +3566,12 @@
                     activeActionDropdown = null;
                 }
                 
+                // Close image dropdown
+                closeImageDropdown();
+                
                 // Close sidebar on mobile
                 if (window.innerWidth <= 768 && isSidebarOpen) {
                     toggleSidebar();
-                }
-                
-                // Keluar dari image mode
-                if (imageMode) {
-                    imageMode = false;
-                    updateImageModeUI();
                 }
             }
         });
