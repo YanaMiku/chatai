@@ -47,7 +47,7 @@
             font-size: 1.2rem;
             font-weight: 600;
             text-decoration: none;
-            color: inherit;
+            color: white;
         }
         
         .logo-icon {
@@ -69,21 +69,13 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-        
-        .session-url {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #2d2d30;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            max-width: 300px;
+            max-width: 250px;
             overflow: hidden;
         }
         
-        .session-url-text {
+        .session-id-display {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -188,13 +180,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1;
             overflow: hidden;
-        }
-        
-        .history-item-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
         
         .history-item:hover {
@@ -216,19 +203,18 @@
             opacity: 1;
         }
         
-        .history-action-btn {
+        .share-btn {
             background: none;
             border: none;
             color: #acacbe;
             cursor: pointer;
-            padding: 2px 4px;
+            padding: 2px;
             border-radius: 4px;
-            font-size: 0.8rem;
         }
         
-        .history-action-btn:hover {
-            background-color: #40414f;
-            color: white;
+        .share-btn:hover {
+            color: #10a37f;
+            background-color: rgba(16, 163, 127, 0.1);
         }
         
         .main-content {
@@ -523,12 +509,12 @@
             display: block;
         }
         
-        .modal-overlay {
+        .share-modal {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
@@ -539,60 +525,51 @@
             transition: all 0.3s;
         }
         
-        .modal-overlay.active {
+        .share-modal.active {
             opacity: 1;
             visibility: visible;
         }
         
-        .modal {
+        .share-modal-content {
             background-color: #202123;
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 2rem;
             width: 90%;
             max-width: 500px;
-            border: 1px solid #4d4d4f;
+            border: 1px solid #565869;
         }
         
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .share-modal-title {
+            font-size: 1.3rem;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            color: #acacbe;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-        
-        .modal-body {
+        .share-url-container {
+            display: flex;
+            gap: 10px;
             margin-bottom: 1.5rem;
         }
         
-        .modal-input {
-            width: 100%;
-            padding: 12px;
+        .share-url-input {
+            flex: 1;
+            padding: 10px 12px;
             background-color: #2d2d30;
             border: 1px solid #565869;
             border-radius: 6px;
             color: white;
+            font-family: 'Courier New', monospace;
             font-size: 0.9rem;
         }
         
-        .modal-input:focus {
+        .share-url-input:focus {
             outline: none;
             border-color: #10a37f;
         }
         
-        .modal-actions {
+        .share-actions {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
@@ -611,70 +588,65 @@
                 display: none;
             }
             
-            .session-url {
+            .session-info {
                 max-width: 150px;
             }
         }
         
-        .share-btn {
-            background-color: transparent;
-            border: none;
-            color: #acacbe;
-            cursor: pointer;
-            padding: 2px 4px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        
-        .share-btn:hover {
-            background-color: #40414f;
-            color: white;
-        }
-        
-        .session-id-display {
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
-            background-color: #2d2d30;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-        
-        .notification {
+        .toast {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 20px;
             background-color: #10a37f;
             color: white;
             padding: 12px 20px;
-            border-radius: 6px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             z-index: 1001;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
             opacity: 0;
-            visibility: hidden;
             transition: all 0.3s;
         }
         
-        .notification.active {
+        .toast.show {
+            transform: translateY(0);
             opacity: 1;
-            visibility: visible;
         }
         
-        .notification-close {
+        .close-btn {
             background: none;
             border: none;
-            color: white;
+            color: #acacbe;
+            font-size: 1.2rem;
             cursor: pointer;
+            padding: 4px;
+        }
+        
+        .share-link-btn {
+            background: none;
+            border: none;
+            color: #acacbe;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .share-link-btn:hover {
+            background-color: rgba(16, 163, 127, 0.1);
+            color: #10a37f;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-left">
-            <a href="/" class="logo">
+            <a href="./" class="logo">
                 <div class="logo-icon">
                     <i class="fas fa-robot"></i>
                 </div>
@@ -684,21 +656,19 @@
                 <i class="fas fa-id-badge"></i>
                 <span>Session: <span id="sessionIdDisplay" class="session-id-display">Loading...</span></span>
             </div>
-            <div class="session-url">
-                <span class="session-url-text" id="sessionUrlDisplay"></span>
-                <button class="share-btn" onclick="copySessionUrl()" title="Copy URL">
-                    <i class="fas fa-link"></i>
-                </button>
-            </div>
         </div>
         <div class="header-actions">
             <button class="btn btn-secondary" onclick="newChat()">
                 <i class="fas fa-plus"></i>
                 <span>New Chat</span>
             </button>
-            <button class="btn btn-primary" onclick="shareChat()">
+            <button class="btn btn-secondary" onclick="shareCurrentChat()">
                 <i class="fas fa-share"></i>
                 <span>Share</span>
+            </button>
+            <button class="btn btn-primary" onclick="clearChat()">
+                <i class="fas fa-trash-alt"></i>
+                <span>Clear</span>
             </button>
         </div>
     </div>
@@ -792,318 +762,220 @@
     </div>
 
     <!-- Share Modal -->
-    <div class="modal-overlay" id="shareModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Share Chat</div>
-                <button class="modal-close" onclick="closeShareModal()">&times;</button>
+    <div class="share-modal" id="shareModal">
+        <div class="share-modal-content">
+            <div class="share-modal-title">
+                <i class="fas fa-share"></i>
+                Share Chat
             </div>
-            <div class="modal-body">
-                <p>Share this chat with others by sending them the link below:</p>
-                <input type="text" class="modal-input" id="shareUrlInput" readonly>
-                <p style="margin-top: 10px; font-size: 0.8rem; color: #acacbe;">
-                    Anyone with this link can view and continue this conversation.
-                </p>
+            <div class="share-url-container">
+                <input type="text" class="share-url-input" id="shareUrlInput" readonly>
+                <button class="btn btn-primary btn-small" onclick="copyShareUrl()">
+                    <i class="fas fa-copy"></i>
+                </button>
             </div>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeShareModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="copyShareUrl()">Copy Link</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Load Chat Modal -->
-    <div class="modal-overlay" id="loadChatModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Load Chat from URL</div>
-                <button class="modal-close" onclick="closeLoadChatModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Enter a chat URL or session ID to load:</p>
-                <input type="text" class="modal-input" id="loadChatInput" placeholder="https://domain.com/chat/session_id or just session_id">
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeLoadChatModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="loadChatFromUrl()">Load Chat</button>
+            <div class="share-actions">
+                <button class="btn btn-secondary" onclick="closeShareModal()">
+                    Close
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        <span id="notificationMessage">Copied to clipboard!</span>
-        <button class="notification-close" onclick="hideNotification()">&times;</button>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toastMessage">Copied to clipboard!</span>
+        <button class="close-btn" onclick="hideToast()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
 
     <script>
-        // URL Router for handling chat sessions
-        class ChatRouter {
+        // Router untuk menangani URL hash
+        class HashRouter {
             constructor() {
-                this.baseUrl = window.location.origin;
-                this.currentSessionId = null;
-                
-                // Listen for URL changes
-                window.addEventListener('popstate', () => this.handleUrlChange());
+                this.routes = {};
+                this.currentHash = '';
+                this.init();
             }
             
-            // Extract session ID from URL
-            extractSessionIdFromUrl() {
-                const path = window.location.pathname;
-                const match = path.match(/\/chat\/([a-zA-Z0-9_-]+)/);
-                
-                if (match && match[1]) {
-                    return match[1];
-                }
-                
-                // Check for query parameter as fallback
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get('session') || null;
+            init() {
+                window.addEventListener('hashchange', () => this.handleHashChange());
+                this.handleHashChange();
             }
             
-            // Update URL with session ID
-            updateUrlForSession(sessionId) {
-                const newPath = `/chat/${sessionId}`;
-                const newUrl = this.baseUrl + newPath;
-                
-                // Update browser URL without reload
-                window.history.pushState({ sessionId }, `Chat ${sessionId}`, newPath);
-                
-                // Update URL display
-                this.updateUrlDisplay(newUrl);
-                
-                return newUrl;
+            addRoute(path, handler) {
+                this.routes[path] = handler;
             }
             
-            // Update URL display
-            updateUrlDisplay(url) {
-                const display = document.getElementById('sessionUrlDisplay');
-                display.textContent = url.replace('https://', '');
-                display.title = url;
-            }
-            
-            // Handle URL changes (back/forward buttons)
-            handleUrlChange() {
-                const sessionId = this.extractSessionIdFromUrl();
-                if (sessionId && sessionId !== this.currentSessionId) {
-                    this.loadSession(sessionId);
+            handleHashChange() {
+                const hash = window.location.hash;
+                
+                // Ekstrak path dari hash (misal: #/chat/session_id)
+                const match = hash.match(/^#\/([^\/]+)\/(.+)$/);
+                
+                if (match) {
+                    const route = match[1];
+                    const param = match[2];
+                    
+                    if (this.routes[route]) {
+                        this.currentHash = hash;
+                        this.routes[route](param);
+                    } else {
+                        // Default ke chat jika route tidak dikenali
+                        this.navigateToChat(param);
+                    }
+                } else if (hash === '' || hash === '#') {
+                    // Buat session baru jika tidak ada hash
+                    this.navigateToNewChat();
+                } else {
+                    // Tangani hash yang tidak valid
+                    console.warn('Invalid hash format:', hash);
+                    this.navigateToNewChat();
                 }
             }
             
-            // Load a session from URL
-            async loadSession(sessionId) {
-                this.currentSessionId = sessionId;
-                
-                // Update UI
-                document.getElementById('sessionIdDisplay').textContent = sessionId.substring(0, 12) + (sessionId.length > 12 ? '...' : '');
-                
-                // Update URL display
-                this.updateUrlDisplay(this.baseUrl + `/chat/${sessionId}`);
-                
-                // Load chat for this session
-                loadChatFromSessionId(sessionId);
+            navigateToChat(sessionId) {
+                window.location.hash = `#/chat/${sessionId}`;
             }
             
-            // Get current session URL
-            getCurrentSessionUrl() {
-                return this.baseUrl + `/chat/${this.currentSessionId}`;
+            navigateToNewChat() {
+                const newSessionId = generateSessionId();
+                this.navigateToChat(newSessionId);
+            }
+            
+            getCurrentSessionId() {
+                const match = this.currentHash.match(/^#\/chat\/(.+)$/);
+                return match ? match[1] : null;
             }
         }
-        
-        // Initialize router
-        const router = new ChatRouter();
-        
+
         // Generate unique session ID
         function generateSessionId() {
             const timestamp = Date.now().toString(36);
             const randomStr = Math.random().toString(36).substring(2, 9);
             return `session_${timestamp}_${randomStr}`;
         }
+
+        // Inisialisasi router
+        const router = new HashRouter();
         
         // Session management
         let currentSessionId = null;
-        let currentChatId = `chat_${Date.now()}`;
-        let chats = JSON.parse(localStorage.getItem('chatHistory')) || {};
+        let currentMessages = [];
+        let allChats = JSON.parse(localStorage.getItem('chatHistory')) || {};
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if there's a session ID in the URL
-            const urlSessionId = router.extractSessionIdFromUrl();
+            // Setup route handler
+            router.addRoute('chat', handleChatRoute);
             
-            if (urlSessionId) {
-                // Load session from URL
-                router.loadSession(urlSessionId);
-            } else {
-                // Generate new session ID
-                currentSessionId = generateSessionId();
-                
-                // Update URL with new session ID
-                router.updateUrlForSession(currentSessionId);
-                
-                // Display session ID
-                document.getElementById('sessionIdDisplay').textContent = 
-                    currentSessionId.substring(0, 12) + '...';
-                
-                // Focus on input
-                document.getElementById('messageInput').focus();
-                
-                // Load current chat if exists
-                if (chats[currentChatId]) {
-                    displayMessages();
-                    document.getElementById('mainContent').classList.add('chat-active');
-                }
-            }
+            // Focus on input
+            document.getElementById('messageInput').focus();
             
             // Load chat history from localStorage
             loadChatHistory();
         });
+        
+        // Handle chat route
+        function handleChatRoute(sessionId) {
+            currentSessionId = sessionId;
+            
+            // Update UI dengan session ID
+            document.getElementById('sessionIdDisplay').textContent = 
+                sessionId.length > 20 ? sessionId.substring(0, 20) + '...' : sessionId;
+            
+            // Load messages untuk session ini
+            if (allChats[sessionId]) {
+                currentMessages = allChats[sessionId].messages || [];
+                displayMessages();
+                document.getElementById('mainContent').classList.add('chat-active');
+            } else {
+                // Buat session baru
+                currentMessages = [];
+                allChats[sessionId] = {
+                    title: 'New Chat',
+                    timestamp: Date.now(),
+                    messages: []
+                };
+                saveChatsToStorage();
+                document.getElementById('mainContent').classList.remove('chat-active');
+            }
+            
+            // Update chat history sidebar
+            loadChatHistory();
+        }
         
         // Load and display chat history
         function loadChatHistory() {
             const chatHistoryEl = document.getElementById('chatHistory');
             chatHistoryEl.innerHTML = '';
             
-            const chatIds = Object.keys(chats);
+            const sessionIds = Object.keys(allChats);
             
-            if (chatIds.length === 0) {
+            if (sessionIds.length === 0) {
                 chatHistoryEl.innerHTML = '<div class="empty-state">No chat history</div>';
                 return;
             }
             
             // Sort by timestamp (newest first)
-            chatIds.sort((a, b) => {
-                return chats[b].timestamp - chats[a].timestamp;
+            sessionIds.sort((a, b) => {
+                return allChats[b].timestamp - allChats[a].timestamp;
             });
             
-            chatIds.forEach(chatId => {
-                const chat = chats[chatId];
+            sessionIds.forEach(sessionId => {
+                const chat = allChats[sessionId];
                 const historyItem = document.createElement('div');
-                historyItem.className = `history-item ${chatId === currentChatId ? 'active' : ''}`;
+                historyItem.className = `history-item ${sessionId === currentSessionId ? 'active' : ''}`;
                 historyItem.innerHTML = `
                     <div class="history-item-content">
                         <i class="fas fa-message"></i>
-                        <span class="history-item-text">${chat.title || 'New Chat'}</span>
+                        <span>${chat.title || 'New Chat'}</span>
                     </div>
                     <div class="history-item-actions">
-                        <button class="history-action-btn" onclick="shareChatById('${chatId}', event)" title="Share">
+                        <button class="share-btn" onclick="shareChat('${sessionId}', event)">
                             <i class="fas fa-share"></i>
-                        </button>
-                        <button class="history-action-btn" onclick="deleteChat('${chatId}', event)" title="Delete">
-                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 `;
                 
                 historyItem.onclick = (e) => {
-                    // Don't trigger if clicking on action buttons
-                    if (!e.target.closest('.history-item-actions')) {
-                        loadChat(chatId);
+                    if (!e.target.closest('.share-btn')) {
+                        router.navigateToChat(sessionId);
                     }
                 };
+                
                 chatHistoryEl.appendChild(historyItem);
             });
         }
         
-        // Load a specific chat
-        function loadChat(chatId) {
-            currentChatId = chatId;
-            const chat = chats[chatId];
-            
-            if (!chat) return;
-            
-            // Update UI
-            document.getElementById('mainContent').classList.add('chat-active');
-            displayMessages(chat.messages || []);
-            loadChatHistory();
-            
-            // Focus on input
-            document.getElementById('messageInput').focus();
-        }
-        
-        // Load chat from session ID
-        function loadChatFromSessionId(sessionId) {
-            // Find all chats with this session ID
-            const sessionChats = Object.entries(chats).filter(([id, chat]) => 
-                chat.sessionId === sessionId
-            );
-            
-            if (sessionChats.length > 0) {
-                // Load the most recent chat for this session
-                sessionChats.sort((a, b) => b[1].timestamp - a[1].timestamp);
-                const [chatId, chat] = sessionChats[0];
-                loadChat(chatId);
-                currentSessionId = sessionId;
-            } else {
-                // No chats found for this session, start new chat
-                newChatForSession(sessionId);
-            }
-        }
-        
-        // Create new chat for a specific session
-        function newChatForSession(sessionId) {
-            currentSessionId = sessionId;
-            currentChatId = `chat_${Date.now()}`;
-            
-            // Update UI
-            document.getElementById('mainContent').classList.remove('chat-active');
-            document.getElementById('chatMessages').innerHTML = '';
-            document.getElementById('messageInput').value = '';
-            
-            // Reset textarea height
-            document.getElementById('messageInput').style.height = 'auto';
-            
-            // Focus on input
-            document.getElementById('messageInput').focus();
-            
-            // Update chat history
-            loadChatHistory();
-        }
-        
         // Create new chat
         function newChat() {
-            // Generate new session ID
-            currentSessionId = generateSessionId();
-            
-            // Update URL
-            router.updateUrlForSession(currentSessionId);
-            
-            // Create new chat
-            newChatForSession(currentSessionId);
+            router.navigateToNewChat();
         }
         
         // Clear current chat
         function clearChat() {
-            if (!chats[currentChatId] || chats[currentChatId].messages.length === 0) return;
+            if (currentMessages.length === 0) return;
             
             if (confirm('Are you sure you want to clear this chat?')) {
-                chats[currentChatId] = {
-                    title: 'New Chat',
-                    timestamp: Date.now(),
-                    sessionId: currentSessionId,
-                    messages: []
-                };
+                currentMessages = [];
+                if (allChats[currentSessionId]) {
+                    allChats[currentSessionId].messages = [];
+                    allChats[currentSessionId].timestamp = Date.now();
+                    allChats[currentSessionId].title = 'New Chat';
+                    saveChatsToStorage();
+                }
                 
                 // Update UI
                 document.getElementById('chatMessages').innerHTML = '';
-                localStorage.setItem('chatHistory', JSON.stringify(chats));
                 loadChatHistory();
             }
         }
         
-        // Delete chat
-        function deleteChat(chatId, event) {
-            if (event) event.stopPropagation();
-            
-            if (confirm('Are you sure you want to delete this chat?')) {
-                delete chats[chatId];
-                
-                if (chatId === currentChatId) {
-                    newChat();
-                }
-                
-                localStorage.setItem('chatHistory', JSON.stringify(chats));
-                loadChatHistory();
-            }
+        // Save chats to localStorage
+        function saveChatsToStorage() {
+            localStorage.setItem('chatHistory', JSON.stringify(allChats));
         }
         
         // Send message
@@ -1142,7 +1014,7 @@
                     addMessageToChat(data.result, 'ai', data.timestamp, data.responseTime);
                     
                     // Update chat title if this is the first message
-                    if (chats[currentChatId] && chats[currentChatId].messages.length === 2) {
+                    if (currentMessages.length === 2) {
                         updateChatTitle(message);
                     }
                 } else {
@@ -1168,35 +1040,32 @@
         
         // Add message to chat
         function addMessageToChat(message, sender, timestamp = null, responseTime = null) {
-            const messageId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-            
             const messageObj = {
-                id: messageId,
                 sender,
                 content: message,
                 timestamp: timestamp || new Date().toISOString(),
                 responseTime
             };
             
-            // Initialize chat if it doesn't exist
-            if (!chats[currentChatId]) {
-                chats[currentChatId] = {
+            currentMessages.push(messageObj);
+            
+            // Save to chat history
+            if (!allChats[currentSessionId]) {
+                allChats[currentSessionId] = {
                     title: message.length > 30 ? message.substring(0, 30) + '...' : message,
                     timestamp: Date.now(),
-                    sessionId: currentSessionId,
                     messages: []
                 };
             }
             
-            // Add message to chat
-            chats[currentChatId].messages.push(messageObj);
-            chats[currentChatId].timestamp = Date.now();
+            allChats[currentSessionId].messages = currentMessages;
+            allChats[currentSessionId].timestamp = Date.now();
             
             // Save to localStorage
-            localStorage.setItem('chatHistory', JSON.stringify(chats));
+            saveChatsToStorage();
             
             // Update UI
-            displayMessages(chats[currentChatId].messages);
+            displayMessages();
             
             // Update chat history sidebar
             loadChatHistory();
@@ -1207,33 +1076,26 @@
         
         // Update chat title
         function updateChatTitle(firstMessage) {
-            if (chats[currentChatId]) {
-                chats[currentChatId].title = firstMessage.length > 30 ? 
+            if (allChats[currentSessionId]) {
+                allChats[currentSessionId].title = firstMessage.length > 30 ? 
                     firstMessage.substring(0, 30) + '...' : firstMessage;
-                localStorage.setItem('chatHistory', JSON.stringify(chats));
+                saveChatsToStorage();
                 loadChatHistory();
             }
         }
         
-        // Display messages
-        function displayMessages(messages = null) {
+        // Display all messages
+        function displayMessages() {
             const chatMessagesEl = document.getElementById('chatMessages');
+            chatMessagesEl.innerHTML = '';
             
-            if (!messages) {
-                messages = chats[currentChatId] ? chats[currentChatId].messages : [];
-            }
-            
-            if (messages.length === 0) {
-                chatMessagesEl.innerHTML = '';
+            if (currentMessages.length === 0) {
                 return;
             }
             
-            chatMessagesEl.innerHTML = '';
-            
-            messages.forEach(message => {
+            currentMessages.forEach((message, index) => {
                 const messageEl = document.createElement('div');
                 messageEl.className = `message ${message.sender}`;
-                messageEl.id = message.id;
                 
                 const avatarIcon = message.sender === 'user' ? 'fas fa-user' : 'fas fa-robot';
                 const senderName = message.sender === 'user' ? 'You' : 'Chat AI';
@@ -1260,7 +1122,7 @@
                         </div>
                         ${message.sender === 'ai' ? `
                         <div class="message-actions">
-                            <button class="message-action-btn" onclick="copyMessage('${message.id}')">
+                            <button class="message-action-btn" onclick="copyMessage(${index})">
                                 <i class="fas fa-copy"></i>
                                 <span>Copy</span>
                             </button>
@@ -1308,52 +1170,49 @@
         }
         
         // Copy message to clipboard
-        function copyMessage(messageId) {
-            const chat = chats[currentChatId];
-            if (!chat) return;
-            
-            const message = chat.messages.find(m => m.id === messageId);
+        function copyMessage(messageIndex) {
+            const message = currentMessages[messageIndex];
             if (message) {
                 navigator.clipboard.writeText(message.content).then(() => {
-                    showNotification('Message copied to clipboard!');
+                    showToast('Message copied to clipboard!');
                 });
             }
         }
         
-        // Share chat
-        function shareChat() {
-            const shareUrl = router.getCurrentSessionUrl();
+        // Share current chat
+        function shareCurrentChat() {
+            if (!currentSessionId) return;
+            
+            const shareUrl = getChatUrl(currentSessionId);
             document.getElementById('shareUrlInput').value = shareUrl;
             document.getElementById('shareModal').classList.add('active');
         }
         
-        // Share specific chat by ID
-        function shareChatById(chatId, event) {
+        // Share specific chat
+        function shareChat(sessionId, event) {
             if (event) event.stopPropagation();
             
-            const chat = chats[chatId];
-            if (!chat || !chat.sessionId) return;
-            
-            const shareUrl = window.location.origin + `/chat/${chat.sessionId}`;
+            const shareUrl = getChatUrl(sessionId);
             document.getElementById('shareUrlInput').value = shareUrl;
             document.getElementById('shareModal').classList.add('active');
         }
         
-        // Copy share URL
+        // Get chat URL
+        function getChatUrl(sessionId) {
+            // Menggunakan base URL dari halaman saat ini
+            const baseUrl = window.location.origin + window.location.pathname;
+            return `${baseUrl}#/chat/${sessionId}`;
+        }
+        
+        // Copy share URL to clipboard
         function copyShareUrl() {
             const shareUrlInput = document.getElementById('shareUrlInput');
             shareUrlInput.select();
+            shareUrlInput.setSelectionRange(0, 99999); // For mobile devices
+            
             navigator.clipboard.writeText(shareUrlInput.value).then(() => {
-                showNotification('Link copied to clipboard!');
+                showToast('Chat URL copied to clipboard!');
                 closeShareModal();
-            });
-        }
-        
-        // Copy session URL
-        function copySessionUrl() {
-            const url = router.getCurrentSessionUrl();
-            navigator.clipboard.writeText(url).then(() => {
-                showNotification('URL copied to clipboard!');
             });
         }
         
@@ -1362,45 +1221,22 @@
             document.getElementById('shareModal').classList.remove('active');
         }
         
-        // Open load chat modal
-        function openLoadChatModal() {
-            document.getElementById('loadChatModal').classList.add('active');
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                hideToast();
+            }, 3000);
         }
         
-        // Close load chat modal
-        function closeLoadChatModal() {
-            document.getElementById('loadChatModal').classList.remove('active');
-        }
-        
-        // Load chat from URL
-        function loadChatFromUrl() {
-            const input = document.getElementById('loadChatInput').value.trim();
-            if (!input) return;
-            
-            let sessionId;
-            
-            // Check if it's a URL or just a session ID
-            if (input.includes('/chat/')) {
-                // Extract session ID from URL
-                const match = input.match(/\/chat\/([a-zA-Z0-9_-]+)/);
-                if (match && match[1]) {
-                    sessionId = match[1];
-                } else {
-                    showNotification('Invalid chat URL');
-                    return;
-                }
-            } else {
-                // Assume it's a session ID
-                sessionId = input;
-            }
-            
-            // Update URL and load chat
-            router.updateUrlForSession(sessionId);
-            router.loadSession(sessionId);
-            
-            // Close modal
-            closeLoadChatModal();
-            document.getElementById('loadChatInput').value = '';
+        // Hide toast
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('show');
         }
         
         // Handle Enter key in textarea
@@ -1417,26 +1253,9 @@
             textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
         }
         
-        // Show notification
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            document.getElementById('notificationMessage').textContent = message;
-            notification.classList.add('active');
-            
-            // Auto hide after 3 seconds
-            setTimeout(() => {
-                hideNotification();
-            }, 3000);
-        }
-        
-        // Hide notification
-        function hideNotification() {
-            document.getElementById('notification').classList.remove('active');
-        }
-        
         // Export chat history
         function exportChatHistory() {
-            const dataStr = JSON.stringify(chats, null, 2);
+            const dataStr = JSON.stringify(allChats, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
             
             const exportFileDefaultName = `chat-history-${new Date().toISOString().split('T')[0]}.json`;
@@ -1460,12 +1279,12 @@
                 reader.onload = function(e) {
                     try {
                         const importedChats = JSON.parse(e.target.result);
-                        chats = importedChats;
-                        localStorage.setItem('chatHistory', JSON.stringify(chats));
+                        allChats = importedChats;
+                        saveChatsToStorage();
                         loadChatHistory();
-                        showNotification('Chat history imported successfully!');
+                        showToast('Chat history imported successfully!');
                     } catch (error) {
-                        showNotification('Error importing chat history');
+                        showToast('Error importing chat history. Please make sure the file is valid.');
                     }
                 };
                 
@@ -1475,14 +1294,11 @@
             input.click();
         }
         
-        // Add button to load chat from URL in sidebar
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatHistoryEl = document.getElementById('chatHistory');
-            const loadChatBtn = document.createElement('button');
-            loadChatBtn.className = 'new-chat-btn';
-            loadChatBtn.innerHTML = '<i class="fas fa-link"></i><span>Load Chat from URL</span>';
-            loadChatBtn.onclick = openLoadChatModal;
-            chatHistoryEl.parentNode.insertBefore(loadChatBtn, chatHistoryEl.nextSibling);
+        // Handle clicks outside share modal to close it
+        document.getElementById('shareModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeShareModal();
+            }
         });
     </script>
 </body>
