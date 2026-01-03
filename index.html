@@ -178,6 +178,14 @@
             flex-shrink: 0;
             scrollbar-width: thin;
             scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            border-right: none;
+            transform: translateX(-100%);
         }
         
         .sidebar::-webkit-scrollbar {
@@ -229,28 +237,102 @@
             min-height: 0;
         }
         
+        /* HISTORY ITEM - SINGLE LINE WITH ELLIPSIS */
         .history-item {
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
             margin-bottom: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             transition: all 0.2s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             justify-content: space-between;
             user-select: none;
             background-color: #FFFFFF;
             border: 0.5px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            max-height: 40px;
+            min-height: 40px;
         }
         
         .history-item-content {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex: 1;
             overflow: hidden;
+            min-width: 0;
+        }
+        
+        .history-item-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        /* Gradient shadow effect at the end */
+        .history-item-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, #FFFFFF 90%);
+            pointer-events: none;
+        }
+        
+        /* Dark mode gradient adjustment */
+        @media (prefers-color-scheme: dark) {
+            .history-item-text::after {
+                background: linear-gradient(to right, transparent, rgba(28, 28, 30, 0.95) 90%);
+            }
+        }
+        
+        /* Tooltip for full title preview */
+        .history-item-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            margin-bottom: 8px;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-item-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+        }
+        
+        .history-item:hover .history-item-tooltip {
+            opacity: 1;
+            visibility: visible;
         }
         
         .history-item:hover {
@@ -279,15 +361,16 @@
             border: none;
             color: #8E8E93;
             cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
-            width: 28px;
-            height: 28px;
+            padding: 4px;
+            border-radius: 6px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
             outline: none;
+            font-size: 0.8rem;
         }
         
         .share-btn:hover {
@@ -336,6 +419,11 @@
             position: relative;
             min-width: 0;
             background-color: #F2F2F7;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .main-content.full-width {
+            margin-left: 0;
         }
         
         .welcome-section {
@@ -918,9 +1006,11 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
         
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none;
+        /* Sidebar Toggle Button */
+        .sidebar-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: none;
             border: none;
             color: #007AFF;
@@ -928,10 +1018,17 @@
             padding: 8px;
             border-radius: 8px;
             outline: none;
+            width: 36px;
+            height: 36px;
+            transition: all 0.2s;
         }
         
-        .mobile-menu-btn:hover {
+        .sidebar-toggle-btn:hover {
             background-color: rgba(0, 122, 255, 0.1);
+        }
+        
+        .sidebar-toggle-btn i {
+            font-size: 1rem;
         }
         
         /* Responsive Design */
@@ -959,7 +1056,7 @@
                 display: none;
             }
             
-            .mobile-menu-btn {
+            .sidebar-toggle-btn {
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -977,7 +1074,7 @@
                 position: fixed;
                 top: 56px;
                 left: 0;
-                width: 100%;
+                width: 280px;
                 height: calc(100vh - 56px);
                 z-index: 90;
                 transform: translateX(-100%);
@@ -990,6 +1087,10 @@
             
             .sidebar.active {
                 transform: translateX(0);
+            }
+            
+            .sidebar.collapsed {
+                transform: translateX(-100%);
             }
             
             .container {
@@ -1086,6 +1187,11 @@
                 max-width: calc(100vw - 32px);
                 padding: 10px 16px;
             }
+            
+            /* Hide gradient on mobile for history items */
+            .history-item-text::after {
+                display: none;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1128,7 +1234,7 @@
             }
             
             .history-item {
-                padding: 10px;
+                padding: 8px 10px;
             }
             
             .chat-input {
@@ -1375,6 +1481,15 @@
             .toast {
                 background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
             }
+            
+            /* Tooltip dark mode */
+            .history-item-tooltip {
+                background-color: rgba(0, 0, 0, 0.9);
+            }
+            
+            .history-item-tooltip::after {
+                border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+            }
         }
         
         /* Loading States */
@@ -1403,8 +1518,8 @@
 <body>
     <div class="header">
         <div class="header-left">
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
-                <i class="fas fa-bars"></i>
+            <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle sidebar">
+                <i class="fas fa-history" id="sidebarToggleIcon"></i>
             </button>
             <a href="./" class="logo">
                 <div class="logo-icon">
@@ -1677,14 +1792,15 @@
         let allChats = JSON.parse(localStorage.getItem('chatHistory')) || {};
         let isGeneratingTitle = false;
         let isSidebarOpen = false;
+        let isSidebarCollapsed = false;
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Setup route handler
             router.addRoute('chat', handleChatRoute);
             
-            // Initialize mobile menu
-            initMobileMenu();
+            // Initialize sidebar toggle
+            initSidebarToggle();
             
             // Focus on input
             document.getElementById('messageInput').focus();
@@ -1698,56 +1814,112 @@
             
             // Initialize dark mode detection
             initDarkMode();
+            
+            // Load sidebar state from localStorage
+            const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+            if (savedSidebarState === 'true') {
+                toggleSidebar();
+            }
         });
         
-        // Initialize mobile menu
-        function initMobileMenu() {
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        // Initialize sidebar toggle
+        function initSidebarToggle() {
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
             const sidebar = document.getElementById('sidebar');
+            const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
             
-            mobileMenuBtn.addEventListener('click', () => {
-                isSidebarOpen = !isSidebarOpen;
-                sidebar.classList.toggle('active', isSidebarOpen);
-                
-                // Update aria label
-                mobileMenuBtn.setAttribute('aria-label', isSidebarOpen ? 'Close menu' : 'Open menu');
-            });
+            sidebarToggleBtn.addEventListener('click', toggleSidebar);
             
             // Close sidebar when clicking outside on mobile
             document.addEventListener('click', (e) => {
                 if (window.innerWidth <= 768 && isSidebarOpen) {
-                    if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                        isSidebarOpen = false;
-                        sidebar.classList.remove('active');
-                        mobileMenuBtn.setAttribute('aria-label', 'Open menu');
+                    if (!sidebar.contains(e.target) && !sidebarToggleBtn.contains(e.target)) {
+                        toggleSidebar();
                     }
                 }
             });
             
             // Handle escape key
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && isSidebarOpen) {
-                    isSidebarOpen = false;
-                    sidebar.classList.remove('active');
-                    mobileMenuBtn.setAttribute('aria-label', 'Open menu');
+                if (e.key === 'Escape' && isSidebarOpen && window.innerWidth <= 768) {
+                    toggleSidebar();
                 }
             });
+        }
+        
+        // Toggle sidebar visibility
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
+            
+            isSidebarCollapsed = !isSidebarCollapsed;
+            
+            if (window.innerWidth > 768) {
+                // Desktop behavior
+                if (isSidebarCollapsed) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('full-width');
+                    sidebarToggleIcon.className = 'fas fa-bars';
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('full-width');
+                    sidebarToggleIcon.className = 'fas fa-history';
+                }
+            } else {
+                // Mobile behavior
+                if (isSidebarCollapsed) {
+                    sidebar.classList.remove('active');
+                    sidebarToggleIcon.className = 'fas fa-bars';
+                    isSidebarOpen = false;
+                } else {
+                    sidebar.classList.add('active');
+                    sidebarToggleIcon.className = 'fas fa-times';
+                    isSidebarOpen = true;
+                }
+            }
+            
+            // Save state to localStorage
+            localStorage.setItem('sidebarCollapsed', isSidebarCollapsed);
         }
         
         // Handle window resize
         function handleResize() {
             const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
             
-            // Auto-close sidebar on mobile when switching to desktop
-            if (window.innerWidth > 768 && isSidebarOpen) {
-                isSidebarOpen = false;
+            if (window.innerWidth > 768) {
+                // Desktop: restore saved state
+                const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+                if (savedSidebarState === 'true') {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('full-width');
+                    sidebarToggleIcon.className = 'fas fa-bars';
+                    isSidebarCollapsed = true;
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('full-width');
+                    sidebarToggleIcon.className = 'fas fa-history';
+                    isSidebarCollapsed = false;
+                }
+                
+                // Reset mobile styles
                 sidebar.classList.remove('active');
-                document.getElementById('mobileMenuBtn').setAttribute('aria-label', 'Open menu');
-            }
-            
-            // Auto-open sidebar on desktop
-            if (window.innerWidth > 768 && !isSidebarOpen) {
-                sidebar.style.transform = 'none';
+                sidebar.style.transform = '';
+                isSidebarOpen = false;
+            } else {
+                // Mobile: auto-close sidebar
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('full-width');
+                
+                if (isSidebarOpen) {
+                    sidebar.classList.add('active');
+                    sidebarToggleIcon.className = 'fas fa-times';
+                } else {
+                    sidebar.classList.remove('active');
+                    sidebarToggleIcon.className = 'fas fa-bars';
+                }
             }
         }
         
@@ -1776,9 +1948,7 @@
             
             // Close sidebar on mobile when navigating
             if (window.innerWidth <= 768 && isSidebarOpen) {
-                isSidebarOpen = false;
-                document.getElementById('sidebar').classList.remove('active');
-                document.getElementById('mobileMenuBtn').setAttribute('aria-label', 'Open menu');
+                toggleSidebar();
             }
             
             // Load messages untuk session ini
@@ -1839,7 +2009,10 @@
                 historyItem.innerHTML = `
                     <div class="history-item-content">
                         <i class="fas fa-message"></i>
-                        ${titleDisplay}
+                        <div class="history-item-text">
+                            ${titleDisplay}
+                        </div>
+                        <div class="history-item-tooltip">${chat.title || 'New Chat'}</div>
                     </div>
                     <div class="history-item-actions">
                         <button class="share-btn" onclick="shareChat('${sessionId}', event)" aria-label="Share chat">
@@ -2386,6 +2559,12 @@
                 document.getElementById('messageInput').focus();
             }
             
+            // Ctrl/Cmd + B untuk toggle sidebar
+            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                e.preventDefault();
+                toggleSidebar();
+            }
+            
             // Escape untuk close modals dan sidebar
             if (e.key === 'Escape') {
                 closeShareModal();
@@ -2393,9 +2572,7 @@
                 
                 // Close sidebar on mobile
                 if (window.innerWidth <= 768 && isSidebarOpen) {
-                    isSidebarOpen = false;
-                    document.getElementById('sidebar').classList.remove('active');
-                    document.getElementById('mobileMenuBtn').setAttribute('aria-label', 'Open menu');
+                    toggleSidebar();
                 }
             }
         });
