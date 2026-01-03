@@ -118,6 +118,15 @@
             background-color: #40414f;
         }
         
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
         .btn-small {
             padding: 4px 8px;
             font-size: 0.8rem;
@@ -161,6 +170,7 @@
         .chat-history {
             flex: 1;
             overflow-y: auto;
+            margin-bottom: 1rem;
         }
         
         .history-item {
@@ -203,7 +213,7 @@
             opacity: 1;
         }
         
-        .share-btn {
+        .delete-btn, .share-btn {
             background: none;
             border: none;
             color: #acacbe;
@@ -215,6 +225,35 @@
         .share-btn:hover {
             color: #10a37f;
             background-color: rgba(16, 163, 127, 0.1);
+        }
+        
+        .delete-btn:hover {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .sidebar-footer {
+            padding-top: 1rem;
+            border-top: 1px solid #4d4d4f;
+        }
+        
+        .delete-all-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .delete-all-btn:hover {
+            background-color: rgba(239, 68, 68, 0.2);
         }
         
         .main-content {
@@ -509,7 +548,7 @@
             display: block;
         }
         
-        .share-modal {
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -525,12 +564,12 @@
             transition: all 0.3s;
         }
         
-        .share-modal.active {
+        .modal.active {
             opacity: 1;
             visibility: visible;
         }
         
-        .share-modal-content {
+        .modal-content {
             background-color: #202123;
             border-radius: 12px;
             padding: 2rem;
@@ -539,7 +578,7 @@
             border: 1px solid #565869;
         }
         
-        .share-modal-title {
+        .modal-title {
             font-size: 1.3rem;
             margin-bottom: 1rem;
             display: flex;
@@ -547,14 +586,19 @@
             gap: 10px;
         }
         
-        .share-url-container {
-            display: flex;
-            gap: 10px;
+        .modal-body {
             margin-bottom: 1.5rem;
+            color: #acacbe;
         }
         
-        .share-url-input {
-            flex: 1;
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .modal-input {
+            width: 100%;
             padding: 10px 12px;
             background-color: #2d2d30;
             border: 1px solid #565869;
@@ -562,17 +606,12 @@
             color: white;
             font-family: 'Courier New', monospace;
             font-size: 0.9rem;
+            margin-top: 1rem;
         }
         
-        .share-url-input:focus {
+        .modal-input:focus {
             outline: none;
             border-color: #10a37f;
-        }
-        
-        .share-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
         }
         
         @media (max-width: 768px) {
@@ -616,6 +655,10 @@
             opacity: 1;
         }
         
+        .toast-error {
+            background-color: #ef4444;
+        }
+        
         .close-btn {
             background: none;
             border: none;
@@ -640,6 +683,27 @@
         .share-link-btn:hover {
             background-color: rgba(16, 163, 127, 0.1);
             color: #10a37f;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #acacbe;
+        }
+        
+        .history-count {
+            font-size: 0.8rem;
+            color: #acacbe;
+            background-color: #2d2d30;
+            padding: 2px 8px;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -666,21 +730,31 @@
                 <i class="fas fa-share"></i>
                 <span>Share</span>
             </button>
-            <button class="btn btn-primary" onclick="clearChat()">
+            <button class="btn btn-danger" onclick="deleteCurrentChat()">
                 <i class="fas fa-trash-alt"></i>
-                <span>Clear</span>
+                <span>Delete</span>
             </button>
         </div>
     </div>
     
     <div class="container">
         <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Chat History</div>
+                <div class="history-count" id="historyCount">0</div>
+            </div>
             <button class="new-chat-btn" onclick="newChat()">
                 <i class="fas fa-plus"></i>
                 <span>New Chat</span>
             </button>
             <div class="chat-history" id="chatHistory">
                 <!-- Chat history items will be added here -->
+            </div>
+            <div class="sidebar-footer">
+                <button class="delete-all-btn" onclick="deleteAllChats()">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Delete All History</span>
+                </button>
             </div>
         </div>
         
@@ -762,21 +836,43 @@
     </div>
 
     <!-- Share Modal -->
-    <div class="share-modal" id="shareModal">
-        <div class="share-modal-content">
-            <div class="share-modal-title">
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <div class="modal-title">
                 <i class="fas fa-share"></i>
                 Share Chat
             </div>
-            <div class="share-url-container">
-                <input type="text" class="share-url-input" id="shareUrlInput" readonly>
-                <button class="btn btn-primary btn-small" onclick="copyShareUrl()">
-                    <i class="fas fa-copy"></i>
-                </button>
+            <div class="modal-body">
+                <p>Copy the URL below to share this chat:</p>
+                <input type="text" class="modal-input" id="shareUrlInput" readonly>
             </div>
-            <div class="share-actions">
+            <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeShareModal()">
                     Close
+                </button>
+                <button class="btn btn-primary" onclick="copyShareUrl()">
+                    <i class="fas fa-copy"></i> Copy URL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <i class="fas fa-trash-alt"></i>
+                Delete Chat
+            </div>
+            <div class="modal-body" id="deleteModalBody">
+                <!-- Content will be filled dynamically -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt"></i> Delete
                 </button>
             </div>
         </div>
@@ -886,24 +982,23 @@
                 sessionId.length > 20 ? sessionId.substring(0, 20) + '...' : sessionId;
             
             // Load messages untuk session ini
-            if (allChats[sessionId]) {
-                currentMessages = allChats[sessionId].messages || [];
+            if (allChats[sessionId] && allChats[sessionId].messages && allChats[sessionId].messages.length > 0) {
+                currentMessages = allChats[sessionId].messages;
                 displayMessages();
                 document.getElementById('mainContent').classList.add('chat-active');
             } else {
-                // Buat session baru
+                // Chat kosong, tampilkan welcome screen
                 currentMessages = [];
-                allChats[sessionId] = {
-                    title: 'New Chat',
-                    timestamp: Date.now(),
-                    messages: []
-                };
-                saveChatsToStorage();
                 document.getElementById('mainContent').classList.remove('chat-active');
+                
+                // Jangan simpan chat kosong di history
+                // Hapus dari allChats jika ada
+                if (allChats[sessionId]) {
+                    delete allChats[sessionId];
+                    saveChatsToStorage();
+                    loadChatHistory();
+                }
             }
-            
-            // Update chat history sidebar
-            loadChatHistory();
         }
         
         // Load and display chat history
@@ -913,17 +1008,25 @@
             
             const sessionIds = Object.keys(allChats);
             
-            if (sessionIds.length === 0) {
+            // Filter hanya chat yang memiliki pesan
+            const chatsWithMessages = sessionIds.filter(id => 
+                allChats[id] && allChats[id].messages && allChats[id].messages.length > 0
+            );
+            
+            // Update history count
+            document.getElementById('historyCount').textContent = chatsWithMessages.length;
+            
+            if (chatsWithMessages.length === 0) {
                 chatHistoryEl.innerHTML = '<div class="empty-state">No chat history</div>';
                 return;
             }
             
             // Sort by timestamp (newest first)
-            sessionIds.sort((a, b) => {
+            chatsWithMessages.sort((a, b) => {
                 return allChats[b].timestamp - allChats[a].timestamp;
             });
             
-            sessionIds.forEach(sessionId => {
+            chatsWithMessages.forEach(sessionId => {
                 const chat = allChats[sessionId];
                 const historyItem = document.createElement('div');
                 historyItem.className = `history-item ${sessionId === currentSessionId ? 'active' : ''}`;
@@ -936,11 +1039,14 @@
                         <button class="share-btn" onclick="shareChat('${sessionId}', event)">
                             <i class="fas fa-share"></i>
                         </button>
+                        <button class="delete-btn" onclick="deleteChat('${sessionId}', event)">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     </div>
                 `;
                 
                 historyItem.onclick = (e) => {
-                    if (!e.target.closest('.share-btn')) {
+                    if (!e.target.closest('.share-btn') && !e.target.closest('.delete-btn')) {
                         router.navigateToChat(sessionId);
                     }
                 };
@@ -954,23 +1060,128 @@
             router.navigateToNewChat();
         }
         
-        // Clear current chat
-        function clearChat() {
-            if (currentMessages.length === 0) return;
-            
-            if (confirm('Are you sure you want to clear this chat?')) {
-                currentMessages = [];
-                if (allChats[currentSessionId]) {
-                    allChats[currentSessionId].messages = [];
-                    allChats[currentSessionId].timestamp = Date.now();
-                    allChats[currentSessionId].title = 'New Chat';
-                    saveChatsToStorage();
-                }
-                
-                // Update UI
-                document.getElementById('chatMessages').innerHTML = '';
-                loadChatHistory();
+        // Delete current chat
+        function deleteCurrentChat() {
+            if (!currentSessionId || !allChats[currentSessionId]) {
+                showToast('No chat to delete', true);
+                return;
             }
+            
+            showDeleteModal(currentSessionId, allChats[currentSessionId].title || 'Current Chat', true);
+        }
+        
+        // Delete specific chat
+        function deleteChat(sessionId, event) {
+            if (event) event.stopPropagation();
+            
+            if (!allChats[sessionId]) return;
+            
+            const chatTitle = allChats[sessionId].title || 'Chat';
+            showDeleteModal(sessionId, chatTitle, sessionId === currentSessionId);
+        }
+        
+        // Delete all chats
+        function deleteAllChats() {
+            const sessionIds = Object.keys(allChats);
+            const chatsWithMessages = sessionIds.filter(id => 
+                allChats[id] && allChats[id].messages && allChats[id].messages.length > 0
+            );
+            
+            if (chatsWithMessages.length === 0) {
+                showToast('No chats to delete', true);
+                return;
+            }
+            
+            showDeleteAllModal(chatsWithMessages.length);
+        }
+        
+        // Show delete modal
+        function showDeleteModal(sessionId, chatTitle, isCurrentChat) {
+            const modalBody = document.getElementById('deleteModalBody');
+            modalBody.innerHTML = `
+                <p>Are you sure you want to delete <strong>"${chatTitle}"</strong>?</p>
+                <p class="warning-text">This action cannot be undone.</p>
+            `;
+            
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.onclick = () => {
+                performDeleteChat(sessionId, isCurrentChat);
+                closeDeleteModal();
+            };
+            
+            document.getElementById('deleteModal').classList.add('active');
+        }
+        
+        // Show delete all modal
+        function showDeleteAllModal(count) {
+            const modalBody = document.getElementById('deleteModalBody');
+            modalBody.innerHTML = `
+                <p>Are you sure you want to delete all <strong>${count}</strong> chat${count > 1 ? 's' : ''}?</p>
+                <p class="warning-text">This action cannot be undone. All chat history will be permanently deleted.</p>
+            `;
+            
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.onclick = () => {
+                performDeleteAllChats();
+                closeDeleteModal();
+            };
+            
+            document.getElementById('deleteModal').classList.add('active');
+        }
+        
+        // Perform delete chat
+        function performDeleteChat(sessionId, isCurrentChat) {
+            delete allChats[sessionId];
+            saveChatsToStorage();
+            
+            // Jika chat yang dihapus adalah chat yang sedang aktif
+            if (isCurrentChat) {
+                currentMessages = [];
+                document.getElementById('chatMessages').innerHTML = '';
+                document.getElementById('mainContent').classList.remove('chat-active');
+                
+                // Navigate to new chat
+                router.navigateToNewChat();
+            }
+            
+            // Update UI
+            loadChatHistory();
+            
+            showToast('Chat deleted successfully');
+        }
+        
+        // Perform delete all chats
+        function performDeleteAllChats() {
+            // Hanya hapus chat yang memiliki pesan
+            const sessionIds = Object.keys(allChats);
+            let deletedCount = 0;
+            
+            sessionIds.forEach(sessionId => {
+                if (allChats[sessionId] && allChats[sessionId].messages && allChats[sessionId].messages.length > 0) {
+                    delete allChats[sessionId];
+                    deletedCount++;
+                }
+            });
+            
+            saveChatsToStorage();
+            
+            // Reset current chat jika sedang melihat chat yang dihapus
+            if (currentSessionId && !allChats[currentSessionId]) {
+                currentMessages = [];
+                document.getElementById('chatMessages').innerHTML = '';
+                document.getElementById('mainContent').classList.remove('chat-active');
+                router.navigateToNewChat();
+            }
+            
+            // Update UI
+            loadChatHistory();
+            
+            showToast(`${deletedCount} chat${deletedCount > 1 ? 's' : ''} deleted successfully`);
+        }
+        
+        // Close delete modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
         }
         
         // Save chats to localStorage
@@ -1049,8 +1260,9 @@
             
             currentMessages.push(messageObj);
             
-            // Save to chat history
-            if (!allChats[currentSessionId]) {
+            // Simpan ke chat history hanya jika ini adalah pesan pertama
+            if (currentMessages.length === 1 && sender === 'user') {
+                // Buat entry baru di allChats untuk chat non-kosong
                 allChats[currentSessionId] = {
                     title: message.length > 30 ? message.substring(0, 30) + '...' : message,
                     timestamp: Date.now(),
@@ -1058,20 +1270,23 @@
                 };
             }
             
-            allChats[currentSessionId].messages = currentMessages;
-            allChats[currentSessionId].timestamp = Date.now();
-            
-            // Save to localStorage
-            saveChatsToStorage();
-            
-            // Update UI
-            displayMessages();
-            
-            // Update chat history sidebar
-            loadChatHistory();
+            // Update entry di allChats jika sudah ada
+            if (allChats[currentSessionId]) {
+                allChats[currentSessionId].messages = currentMessages;
+                allChats[currentSessionId].timestamp = Date.now();
+                
+                // Save to localStorage
+                saveChatsToStorage();
+                
+                // Update UI
+                loadChatHistory();
+            }
             
             // Switch to chat view
             document.getElementById('mainContent').classList.add('chat-active');
+            
+            // Display messages
+            displayMessages();
         }
         
         // Update chat title
@@ -1222,8 +1437,9 @@
         }
         
         // Show toast notification
-        function showToast(message) {
+        function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
+            toast.className = `toast ${isError ? 'toast-error' : ''}`;
             document.getElementById('toastMessage').textContent = message;
             toast.classList.add('show');
             
@@ -1253,52 +1469,43 @@
             textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
         }
         
-        // Export chat history
-        function exportChatHistory() {
-            const dataStr = JSON.stringify(allChats, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = `chat-history-${new Date().toISOString().split('T')[0]}.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-        }
-        
-        // Import chat history
-        function importChatHistory() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            
-            input.onchange = function(event) {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    try {
-                        const importedChats = JSON.parse(e.target.result);
-                        allChats = importedChats;
-                        saveChatsToStorage();
-                        loadChatHistory();
-                        showToast('Chat history imported successfully!');
-                    } catch (error) {
-                        showToast('Error importing chat history. Please make sure the file is valid.');
-                    }
-                };
-                
-                reader.readAsText(file);
-            };
-            
-            input.click();
-        }
-        
-        // Handle clicks outside share modal to close it
+        // Handle clicks outside modals to close them
         document.getElementById('shareModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeShareModal();
             }
+        });
+        
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K untuk new chat
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                newChat();
+            }
+            
+            // Ctrl/Cmd + L untuk focus input
+            if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                e.preventDefault();
+                document.getElementById('messageInput').focus();
+            }
+            
+            // Escape untuk close modals
+            if (e.key === 'Escape') {
+                closeShareModal();
+                closeDeleteModal();
+            }
+        });
+        
+        // Auto-save ketika tab ditutup
+        window.addEventListener('beforeunload', function() {
+            saveChatsToStorage();
         });
     </script>
 </body>
