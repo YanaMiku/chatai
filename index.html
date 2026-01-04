@@ -341,6 +341,7 @@
             width: 24px;
             height: 24px;
             flex-shrink: 0;
+            z-index: 10;
         }
         
         .more-actions-btn {
@@ -468,9 +469,8 @@
         }
         
         .welcome-section {
-            padding: 2rem 1.5rem;
+            padding: 1rem;
             text-align: center;
-            max-width: 800px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -478,43 +478,53 @@
             justify-content: center;
             height: 100%;
             width: 100%;
+            max-width: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         .welcome-title {
-            font-size: clamp(1.8rem, 4vw, 2.2rem);
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             line-height: 1.3;
             color: #000000;
+            padding: 0 0.5rem;
         }
         
         .welcome-subtitle {
-            font-size: clamp(1rem, 2vw, 1.1rem);
+            font-size: clamp(0.85rem, 1.5vw, 1rem);
             color: #8E8E93;
-            margin-bottom: 2.5rem;
-            max-width: 600px;
+            margin-bottom: 1.5rem;
+            max-width: 100%;
             line-height: 1.5;
+            padding: 0 1rem;
         }
         
         .suggestions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
             width: 100%;
-            max-width: 700px;
+            max-width: 100%;
+            padding: 0 0.5rem;
         }
         
         .suggestion-card {
             background-color: #FFFFFF;
             border: 0.5px solid rgba(0, 0, 0, 0.05);
-            border-radius: 16px;
-            padding: 1.5rem;
+            border-radius: 12px;
+            padding: 1rem;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
             height: 100%;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         .suggestion-card:hover {
@@ -529,27 +539,32 @@
         
         .suggestion-title {
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1rem;
+            gap: 8px;
+            font-size: 0.9rem;
             color: #000000;
         }
         
         .suggestion-desc {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #8E8E93;
             line-height: 1.4;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         
         /* iOS Style Chat Messages */
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 1.5rem;
+            padding: 1rem;
             display: none;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
         
         .message {
@@ -575,13 +590,13 @@
         }
         
         .message-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
+            margin-right: 10px;
             flex-shrink: 0;
             margin-top: 4px;
         }
@@ -589,7 +604,7 @@
         .message.user .message-avatar {
             order: 2;
             margin-right: 0;
-            margin-left: 12px;
+            margin-left: 10px;
             background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
         }
         
@@ -598,7 +613,7 @@
         }
         
         .message-content {
-            max-width: 75%;
+            max-width: 85%;
             padding: 0;
         }
         
@@ -610,11 +625,11 @@
         
         .message-text {
             line-height: 1.5;
-            font-size: 1rem;
+            font-size: 0.95rem;
             word-wrap: break-word;
             overflow-wrap: break-word;
-            padding: 12px 16px;
-            border-radius: 18px;
+            padding: 10px 14px;
+            border-radius: 16px;
         }
         
         .message.user .message-text {
@@ -634,28 +649,28 @@
         /* Image message styles */
         .message-text img {
             max-width: 100%;
-            border-radius: 12px;
-            margin: 10px 0;
+            border-radius: 10px;
+            margin: 8px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .message-text img.generated-image {
             max-width: 100%;
-            max-height: 500px;
+            max-height: 300px;
             object-fit: contain;
-            border-radius: 16px;
+            border-radius: 14px;
         }
         
         .image-info {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #8E8E93;
-            margin-top: 8px;
-            padding: 8px 12px;
+            margin-top: 6px;
+            padding: 6px 10px;
             background-color: rgba(0, 0, 0, 0.03);
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
         
         .message-text p {
@@ -668,32 +683,32 @@
         
         .message-text pre {
             background-color: #F2F2F7;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             overflow-x: auto;
             margin: 0.5rem 0;
             border: 0.5px solid rgba(0, 0, 0, 0.05);
             font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
         
         .message-text code {
             background-color: #F2F2F7;
-            padding: 2px 6px;
-            border-radius: 6px;
+            padding: 2px 5px;
+            border-radius: 5px;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9em;
+            font-size: 0.85em;
             color: #FF2D55;
         }
         
         .message-text ul, .message-text ol {
-            margin-left: 1.5rem;
+            margin-left: 1.2rem;
             margin-bottom: 0.5rem;
         }
         
         .message-text blockquote {
             border-left: 3px solid #007AFF;
-            padding-left: 12px;
+            padding-left: 10px;
             margin: 0.5rem 0;
             color: #8E8E93;
             font-style: italic;
@@ -703,15 +718,16 @@
             border-collapse: collapse;
             width: 100%;
             margin: 0.5rem 0;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
             border: 0.5px solid rgba(0, 0, 0, 0.05);
         }
         
         .message-text th, .message-text td {
             border: 0.5px solid rgba(0, 0, 0, 0.05);
-            padding: 8px 12px;
+            padding: 6px 10px;
             text-align: left;
+            font-size: 0.9em;
         }
         
         .message-text th {
@@ -720,18 +736,18 @@
         }
         
         .message-info {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #8E8E93;
-            margin-top: 6px;
+            margin-top: 4px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
         
         /* iOS Style Chat Input Container */
         .chat-input-container {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             background-color: #FFFFFF;
             border-top: 0.5px solid rgba(0, 0, 0, 0.1);
             flex-shrink: 0;
@@ -745,21 +761,21 @@
             width: 100%;
             display: flex;
             align-items: flex-end;
-            gap: 12px;
+            gap: 10px;
         }
         
         /* iOS Style Chat Input */
         .chat-input {
             flex: 1;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border: 0.5px solid rgba(0, 0, 0, 0.1);
-            border-radius: 20px;
+            border-radius: 18px;
             background-color: #F2F2F7;
             color: #000000;
-            font-size: 1rem;
+            font-size: 0.95rem;
             resize: none;
-            max-height: 150px;
-            min-height: 40px;
+            max-height: 120px;
+            min-height: 38px;
             line-height: 1.4;
             transition: all 0.2s;
             outline: none;
@@ -777,8 +793,8 @@
         
         /* iOS Style Send Button - Round and Fixed at Bottom */
         .send-button {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
             border: none;
             color: white;
@@ -817,8 +833,8 @@
         }
         
         .image-generate-button {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #34C759 0%, #2AA44F 100%);
             border: none;
             color: white;
@@ -968,11 +984,12 @@
         .input-footer {
             display: flex;
             justify-content: center;
-            margin-top: 0.8rem;
-            font-size: 0.75rem;
+            margin-top: 0.6rem;
+            font-size: 0.7rem;
             color: #8E8E93;
             text-align: center;
             flex-wrap: wrap;
+            padding: 0 0.5rem;
         }
         
         .typing-indicator {
@@ -989,8 +1006,8 @@
         }
         
         .typing-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background-color: #8E8E93;
             animation: typing 1.4s infinite ease-in-out;
@@ -1006,8 +1023,8 @@
         
         .message-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 6px;
+            margin-top: 6px;
             flex-wrap: wrap;
         }
         
@@ -1016,13 +1033,13 @@
             border: none;
             color: #8E8E93;
             cursor: pointer;
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 8px;
+            font-size: 0.7rem;
+            padding: 3px 6px;
+            border-radius: 6px;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             outline: none;
         }
         
@@ -1033,9 +1050,9 @@
         
         .empty-state {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             color: #8E8E93;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         
         .chat-active .welcome-section {
@@ -1073,7 +1090,7 @@
         .modal-content {
             background-color: #FFFFFF;
             border-radius: 16px;
-            padding: 2rem;
+            padding: 1.5rem;
             width: 100%;
             max-width: 480px;
             border: 0.5px solid rgba(0, 0, 0, 0.1);
@@ -1095,38 +1112,39 @@
         }
         
         .modal-title {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-weight: 700;
             color: #000000;
         }
         
         .modal-body {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             color: #8E8E93;
             line-height: 1.5;
+            font-size: 0.9rem;
         }
         
         .modal-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
         
         .modal-input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background-color: #F2F2F7;
             border: 0.5px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            border-radius: 10px;
             color: #000000;
             font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9rem;
-            margin-top: 1rem;
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
             outline: none;
             transition: border-color 0.2s;
         }
@@ -1146,19 +1164,19 @@
         }
         
         .sidebar-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #8E8E93;
             letter-spacing: 0.5px;
         }
         
         .history-count {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #8E8E93;
             background-color: #F2F2F7;
-            padding: 4px 10px;
-            border-radius: 12px;
-            min-width: 28px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            min-width: 24px;
             text-align: center;
         }
         
@@ -1182,21 +1200,21 @@
         /* iOS Style Toast */
         .toast {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 16px;
+            right: 16px;
             background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
             color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
             box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
             z-index: 1001;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: calc(100vw - 40px);
+            max-width: calc(100vw - 32px);
             backdrop-filter: blur(10px);
             border: 0.5px solid rgba(255, 255, 255, 0.2);
         }
@@ -1225,10 +1243,10 @@
             background: none;
             border: none;
             color: rgba(255, 255, 255, 0.8);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            padding: 4px;
-            border-radius: 8px;
+            padding: 3px;
+            border-radius: 6px;
             transition: all 0.2s;
             outline: none;
             flex-shrink: 0;
@@ -1248,11 +1266,11 @@
             border: none;
             color: #007AFF;
             cursor: pointer;
-            padding: 8px;
+            padding: 6px;
             border-radius: 8px;
             outline: none;
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             transition: all 0.2s;
         }
         
@@ -1261,7 +1279,7 @@
         }
         
         .sidebar-toggle-btn i {
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
         
         /* Responsive Design */
@@ -1271,7 +1289,7 @@
             }
             
             .suggestions-grid {
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             }
             
             .message-content {
@@ -1281,7 +1299,7 @@
         
         @media (max-width: 768px) {
             .header {
-                padding: 0.75rem 1rem;
+                padding: 0.6rem 0.75rem;
                 height: 56px;
             }
             
@@ -1300,7 +1318,7 @@
             }
             
             .header-actions .btn {
-                padding: 8px 12px;
+                padding: 6px 10px;
             }
             
             .sidebar {
@@ -1314,7 +1332,7 @@
                 transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 border-right: none;
                 border-top: 0.5px solid rgba(0, 0, 0, 0.1);
-                background-color: rgba(255, 255, 255, 0.95);
+                background-color: rgba(255, 255, 255, 0.98);
                 backdrop-filter: blur(20px);
             }
             
@@ -1330,68 +1348,82 @@
                 position: relative;
             }
             
-            .chat-messages {
-                padding: 1rem;
-            }
-            
-            .message {
-                padding: 0.5rem 0;
-            }
-            
-            .message-content {
-                max-width: 85%;
-            }
-            
-            .message-text {
-                font-size: 0.95rem;
-                padding: 10px 14px;
-            }
-            
-            .message-text pre {
-                padding: 10px;
-                font-size: 0.85rem;
-            }
-            
-            .message-info {
-                font-size: 0.7rem;
-            }
-            
             .welcome-section {
-                padding: 1.5rem 1rem;
+                padding: 0.75rem;
             }
             
             .welcome-title {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
             }
             
             .welcome-subtitle {
-                font-size: 0.9rem;
-                margin-bottom: 2rem;
+                font-size: 0.8rem;
+                margin-bottom: 1.25rem;
+                padding: 0 0.5rem;
             }
             
             .suggestions-grid {
                 grid-template-columns: 1fr;
-                gap: 0.75rem;
+                gap: 0.6rem;
+                padding: 0 0.25rem;
             }
             
             .suggestion-card {
-                padding: 1.25rem;
+                padding: 0.9rem;
+                min-height: 90px;
+            }
+            
+            .suggestion-title {
+                font-size: 0.85rem;
+                gap: 6px;
+            }
+            
+            .suggestion-desc {
+                font-size: 0.75rem;
+                -webkit-line-clamp: 2;
+            }
+            
+            .chat-messages {
+                padding: 0.75rem;
+            }
+            
+            .message {
+                padding: 0.4rem 0;
+            }
+            
+            .message-content {
+                max-width: 88%;
+            }
+            
+            .message-text {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+            
+            .message-text pre {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+            
+            .message-info {
+                font-size: 0.65rem;
             }
             
             .chat-input-container {
-                padding: 1rem;
+                padding: 0.6rem 0.75rem;
             }
             
             .chat-input {
-                font-size: 0.95rem;
-                padding: 10px 16px;
-                min-height: 40px;
-                border-radius: 20px;
+                font-size: 0.9rem;
+                padding: 8px 14px;
+                min-height: 36px;
+                border-radius: 18px;
             }
             
             .send-button, .image-generate-button {
-                width: 40px;
-                height: 40px;
+                width: 36px;
+                height: 36px;
                 margin-bottom: 0;
             }
             
@@ -1421,29 +1453,46 @@
             }
             
             .input-footer {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
+                margin-top: 0.5rem;
             }
             
             .modal-content {
-                padding: 1.5rem;
-                margin: 1rem;
+                padding: 1.25rem;
+                margin: 0.75rem;
             }
             
             .modal-title {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             
             .btn {
-                padding: 8px 12px;
-                font-size: 0.85rem;
+                padding: 7px 10px;
+                font-size: 0.8rem;
             }
             
             .toast {
-                bottom: 16px;
-                right: 16px;
-                left: 16px;
-                max-width: calc(100vw - 32px);
-                padding: 10px 16px;
+                bottom: 12px;
+                right: 12px;
+                left: 12px;
+                max-width: calc(100vw - 24px);
+                padding: 8px 14px;
+            }
+            
+            /* Fix for history item actions dropdown on mobile */
+            .actions-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 50%;
+                right: 10px;
+                transform: translateY(50%);
+                margin-top: 0;
+                min-width: 140px;
+                z-index: 200;
+            }
+            
+            .history-item-actions.active .actions-dropdown {
+                display: flex;
             }
         }
         
@@ -1453,24 +1502,66 @@
                 height: 52px;
             }
             
+            .sidebar {
+                top: 52px;
+                height: calc(100vh - 52px);
+            }
+            
+            .welcome-section {
+                padding: 0.5rem;
+            }
+            
+            .welcome-title {
+                font-size: 1.1rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .suggestions-grid {
+                gap: 0.5rem;
+            }
+            
+            .suggestion-card {
+                padding: 0.8rem;
+                min-height: 85px;
+            }
+            
+            .suggestion-title {
+                font-size: 0.8rem;
+            }
+            
+            .suggestion-desc {
+                font-size: 0.7rem;
+                -webkit-line-clamp: 2;
+            }
+            
             .chat-messages {
-                padding: 0.75rem;
+                padding: 0.5rem;
             }
             
             .message {
-                padding: 0.25rem 0;
+                padding: 0.3rem 0;
             }
             
             .message-content {
                 max-width: 90%;
             }
             
-            .welcome-section {
-                padding: 1rem;
+            .message-text {
+                font-size: 0.85rem;
+                padding: 7px 11px;
             }
             
-            .welcome-title {
-                font-size: 1.3rem;
+            .message-text pre {
+                padding: 7px;
+                font-size: 0.75rem;
+            }
+            
+            .message-text img.generated-image {
+                max-height: 250px;
             }
             
             .modal-actions {
@@ -1487,21 +1578,22 @@
             }
             
             .chat-input {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                padding: 7px 12px;
             }
             
             .send-button, .image-generate-button {
-                width: 36px;
-                height: 36px;
+                width: 34px;
+                height: 34px;
             }
             
             .send-button i, .image-generate-button i {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
             
             .actions-dropdown {
-                min-width: 100px;
-                right: -10px;
+                min-width: 120px;
+                right: 5px;
             }
             
             .dropdown-menu {
@@ -1529,64 +1621,82 @@
         
         @media (max-width: 320px) {
             .header-actions {
-                gap: 4px;
+                gap: 3px;
             }
             
             .header-actions .btn {
-                padding: 6px 8px;
+                padding: 5px 7px;
             }
             
             .chat-input {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
+                padding: 6px 10px;
             }
             
             .message-text {
-                font-size: 0.9rem;
-                padding: 8px 12px;
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+            
+            .suggestion-card {
+                padding: 0.7rem;
+                min-height: 80px;
             }
             
             .actions-dropdown {
-                right: -20px;
+                right: 0;
+                min-width: 110px;
             }
         }
         
         /* Landscape Mode */
         @media (max-height: 600px) and (orientation: landscape) {
             .header {
-                height: 52px;
-                padding: 0.5rem 1rem;
+                height: 50px;
+                padding: 0.5rem 0.75rem;
             }
             
             .sidebar {
-                top: 52px;
-                height: calc(100vh - 52px);
+                top: 50px;
+                height: calc(100vh - 50px);
             }
             
             .welcome-section {
-                padding: 1rem;
+                padding: 0.5rem;
             }
             
             .suggestions-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 0.75rem;
+                gap: 0.5rem;
             }
             
             .suggestion-card {
-                padding: 1rem;
+                padding: 0.75rem;
+                min-height: 80px;
             }
             
             .chat-input-container {
-                padding: 0.75rem;
+                padding: 0.5rem;
             }
             
             .chat-input {
-                min-height: 36px;
-                padding: 8px 16px;
+                min-height: 34px;
+                padding: 6px 12px;
             }
             
             .send-button, .image-generate-button {
-                width: 36px;
-                height: 36px;
+                width: 32px;
+                height: 32px;
+            }
+            
+            .welcome-title {
+                font-size: 1rem;
+                margin-bottom: 0.4rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 0.7rem;
+                margin-bottom: 0.8rem;
             }
         }
         
@@ -1603,7 +1713,7 @@
             }
             
             .sidebar {
-                background-color: rgba(28, 28, 30, 0.95);
+                background-color: rgba(28, 28, 30, 0.98);
                 border-right: 0.5px solid rgba(255, 255, 255, 0.1);
             }
             
@@ -1665,7 +1775,7 @@
             }
             
             .modal-content {
-                background-color: rgba(44, 44, 46, 0.95);
+                background-color: rgba(44, 44, 46, 0.98);
                 border-color: rgba(255, 255, 255, 0.1);
             }
             
@@ -1734,7 +1844,7 @@
             }
             
             .actions-dropdown {
-                background-color: rgba(44, 44, 46, 0.95);
+                background-color: rgba(44, 44, 46, 0.98);
                 border-color: rgba(255, 255, 255, 0.1);
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             }
@@ -1795,7 +1905,7 @@
             
             /* Dropdown dark mode */
             .dropdown-menu {
-                background-color: rgba(44, 44, 46, 0.95);
+                background-color: rgba(44, 44, 46, 0.98);
                 border-color: rgba(255, 255, 255, 0.1);
                 box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             }
@@ -1814,7 +1924,7 @@
             }
             
             .sub-dropdown-menu {
-                background-color: rgba(44, 44, 46, 0.95);
+                background-color: rgba(44, 44, 46, 0.98);
                 border-color: rgba(255, 255, 255, 0.1);
                 box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             }
@@ -1938,7 +2048,7 @@
         </div>
         
         <div class="main-content" id="mainContent">
-            <div class="welcome-section">
+            <div class="welcome-section" id="welcomeSection">
                 <div class="welcome-title">
                     <i class="fas fa-robot"></i> Hello, I'm Chat AI
                 </div>
@@ -2292,6 +2402,7 @@
             
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
+                // Close action dropdown when clicking outside
                 if (activeActionDropdown && !e.target.closest('.history-item-actions')) {
                     activeActionDropdown.classList.remove('active');
                     activeActionDropdown = null;
@@ -2416,6 +2527,7 @@
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('mainContent');
             const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
+            const welcomeSection = document.getElementById('welcomeSection');
             
             if (window.innerWidth > 768) {
                 // Desktop: restore saved state
@@ -2436,6 +2548,9 @@
                 sidebar.classList.remove('active');
                 sidebar.style.transform = '';
                 isSidebarOpen = false;
+                
+                // Ensure welcome section is scrollable on desktop if needed
+                welcomeSection.style.overflowY = 'auto';
             } else {
                 // Mobile: auto-close sidebar
                 sidebar.classList.remove('collapsed');
@@ -2448,6 +2563,17 @@
                     sidebar.classList.remove('active');
                     sidebarToggleIcon.className = 'fas fa-bars';
                 }
+                
+                // Ensure welcome section can scroll on mobile
+                welcomeSection.style.overflowY = 'auto';
+                welcomeSection.style.maxHeight = 'calc(100vh - 120px)'; // Account for header and input
+            }
+            
+            // Adjust suggestions grid for very small screens
+            if (window.innerWidth < 400) {
+                document.querySelector('.suggestions-grid').style.gridTemplateColumns = '1fr';
+            } else if (window.innerWidth < 600) {
+                document.querySelector('.suggestions-grid').style.gridTemplateColumns = 'repeat(2, 1fr)';
             }
         }
         
@@ -2593,9 +2719,10 @@
             }
         }
         
-        // Toggle actions dropdown
+        // Toggle actions dropdown - FIXED VERSION
         function toggleActionsDropdown(event, sessionId) {
             event.stopPropagation();
+            event.preventDefault();
             
             const actionsContainer = event.target.closest('.history-item-actions');
             
@@ -2612,6 +2739,21 @@
             
             if (actionsContainer.classList.contains('active')) {
                 activeActionDropdown = actionsContainer;
+                
+                // On mobile, adjust dropdown position
+                if (window.innerWidth <= 768) {
+                    const dropdown = actionsContainer.querySelector('.actions-dropdown');
+                    const rect = actionsContainer.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    
+                    // Position dropdown in the middle of the screen
+                    dropdown.style.position = 'fixed';
+                    dropdown.style.top = '50%';
+                    dropdown.style.transform = 'translateY(-50%)';
+                    dropdown.style.right = '10px';
+                    dropdown.style.left = 'auto';
+                    dropdown.style.bottom = 'auto';
+                }
             } else {
                 activeActionDropdown = null;
             }
@@ -2643,7 +2785,10 @@
         
         // Delete specific chat
         function deleteChat(sessionId, event) {
-            if (event) event.stopPropagation();
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
             
             if (!allChats[sessionId]) return;
             
@@ -3505,7 +3650,7 @@
         // Auto-resize textarea
         function autoResizeTextarea(textarea) {
             textarea.style.height = 'auto';
-            const newHeight = Math.min(textarea.scrollHeight, 150);
+            const newHeight = Math.min(textarea.scrollHeight, 120);
             textarea.style.height = newHeight + 'px';
         }
         
