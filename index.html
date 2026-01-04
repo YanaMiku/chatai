@@ -613,6 +613,60 @@
             max-height: 300px;
             object-fit: contain;
             border-radius: 14px;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Skeleton Animation for Image Loading */
+        .image-skeleton-container {
+            position: relative;
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            background-color: #F2F2F7;
+            margin: 8px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-skeleton {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* Default 16:9 */
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, #F2F2F7 25%, #E5E5EA 50%, #F2F2F7 75%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.5s infinite linear;
+            border-radius: 14px;
+        }
+        
+        @keyframes skeletonShimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        /* Aspect ratio classes for skeleton */
+        .skeleton-ratio-1-1 {
+            padding-bottom: 100%;
+        }
+        
+        .skeleton-ratio-3-4 {
+            padding-bottom: 133.33%;
+        }
+        
+        .skeleton-ratio-4-3 {
+            padding-bottom: 75%;
+        }
+        
+        .skeleton-ratio-16-9 {
+            padding-bottom: 56.25%;
+        }
+        
+        .skeleton-ratio-9-16 {
+            padding-bottom: 177.78%;
         }
         
         .image-info {
@@ -1891,6 +1945,15 @@
             .history-item-text.marquee {
                 color: #FFFFFF;
             }
+            
+            /* Skeleton dark mode */
+            .image-skeleton-container {
+                background-color: rgba(44, 44, 46, 0.8);
+            }
+            
+            .image-skeleton {
+                background: linear-gradient(90deg, rgba(44, 44, 46, 0.8) 25%, rgba(58, 58, 60, 0.8) 50%, rgba(44, 44, 46, 0.8) 75%);
+            }
         }
         
         /* Loading States */
@@ -1919,6 +1982,14 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+            }
+            
+            .image-skeleton {
+                animation: none !important;
+            }
+            
+            .typing-dot {
+                animation: none !important;
             }
         }
     </style>
@@ -2407,6 +2478,24 @@
             }
             
             return prompt || 'an image';
+        }
+
+        // Fungsi untuk mendapatkan class CSS berdasarkan rasio
+        function getRatioClass(ratio) {
+            switch (ratio) {
+                case '1:1':
+                    return 'skeleton-ratio-1-1';
+                case '3:4':
+                    return 'skeleton-ratio-3-4';
+                case '4:3':
+                    return 'skeleton-ratio-4-3';
+                case '16:9':
+                    return 'skeleton-ratio-16-9';
+                case '9:16':
+                    return 'skeleton-ratio-9-16';
+                default:
+                    return 'skeleton-ratio-16-9';
+            }
         }
 
         // Inisialisasi router
@@ -3028,13 +3117,13 @@
                 
                 // Check if response is successful
                 if (data.success) {
-                    // Add image to chat
+                    // Add image to chat dengan skeleton
                     const imageUrl = data.result;
                     const timestamp = data.timestamp || new Date().toISOString();
                     const responseTime = data.responseTime || '0ms';
                     
-                    // Tambahkan pesan dengan gambar
-                    addImageMessageToChat(imageUrl, prompt, timestamp, responseTime, selectedImageModel);
+                    // Tambahkan pesan dengan gambar dan skeleton
+                    addImageMessageToChatWithSkeleton(imageUrl, prompt, timestamp, responseTime, selectedImageModel);
                     
                     // Generate title for the chat based on prompt (only for first message)
                     if (currentMessages.length === 2) { // User message + Image response
@@ -3260,7 +3349,119 @@
             }, 100);
         }
         
-        // Add image message to chat
+        // Add image message to chat dengan skeleton animation
+        function addImageMessageToChatWithSkeleton(imageUrl, prompt, timestamp = null, responseTime = null, model = 'imagen-v4') {
+            const messageObj = {
+                sender: 'ai',
+                content: imageUrl,
+                prompt: prompt,
+                timestamp: timestamp || new Date().toISOString(),
+                responseTime,
+                type: 'image',
+                model: model,
+                loading: true // Tambahkan flag loading
+            };
+            
+            currentMessages.push(messageObj);
+            
+            // Update entry di allChats jika sudah ada
+            if (allChats[currentSessionId]) {
+                allChats[currentSessionId].messages = currentMessages;
+                allChats[currentSessionId].timestamp = Date.now();
+                
+                // Save to localStorage
+                saveChatsToStorage();
+                
+                // Update UI
+                loadChatHistory();
+            }
+            
+            // Switch to chat view
+            document.getElementById('mainContent').classList.add('chat-active');
+            
+            // Display messages
+            displayMessages();
+            
+            // Preload gambar dan tampilkan setelah selesai loading
+            preloadImageAndReplaceSkeleton(imageUrl, prompt, timestamp, responseTime, model);
+            
+            // Scroll to bottom with smooth animation
+            setTimeout(() => {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.scrollTo({
+                    top: chatMessages.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+        
+        // Preload gambar dan ganti skeleton dengan gambar asli
+        function preloadImageAndReplaceSkeleton(imageUrl, prompt, timestamp, responseTime, model) {
+            const img = new Image();
+            
+            img.onload = function() {
+                // Cari pesan yang sesuai dan update status loading
+                const messageIndex = currentMessages.findIndex(msg => 
+                    msg.type === 'image' && 
+                    msg.content === imageUrl && 
+                    msg.prompt === prompt
+                );
+                
+                if (messageIndex !== -1) {
+                    // Update status loading
+                    currentMessages[messageIndex].loading = false;
+                    
+                    // Update entry di allChats jika sudah ada
+                    if (allChats[currentSessionId]) {
+                        allChats[currentSessionId].messages = currentMessages;
+                        saveChatsToStorage();
+                    }
+                    
+                    // Render ulang pesan
+                    displayMessages();
+                    
+                    // Scroll ke pesan yang baru saja selesai loading
+                    setTimeout(() => {
+                        const chatMessages = document.getElementById('chatMessages');
+                        const messageElements = chatMessages.querySelectorAll('.message');
+                        if (messageElements.length > messageIndex) {
+                            messageElements[messageIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }, 100);
+                }
+            };
+            
+            img.onerror = function() {
+                console.error('Failed to load image:', imageUrl);
+                
+                // Cari pesan yang sesuai dan update status error
+                const messageIndex = currentMessages.findIndex(msg => 
+                    msg.type === 'image' && 
+                    msg.content === imageUrl && 
+                    msg.prompt === prompt
+                );
+                
+                if (messageIndex !== -1) {
+                    // Update status loading
+                    currentMessages[messageIndex].loading = false;
+                    currentMessages[messageIndex].failed = true;
+                    
+                    // Update entry di allChats jika sudah ada
+                    if (allChats[currentSessionId]) {
+                        allChats[currentSessionId].messages = currentMessages;
+                        saveChatsToStorage();
+                    }
+                    
+                    // Render ulang pesan
+                    displayMessages();
+                }
+            };
+            
+            // Mulai loading gambar
+            img.src = imageUrl;
+        }
+        
+        // Add image message to chat (tanpa skeleton, untuk backward compatibility)
         function addImageMessageToChat(imageUrl, prompt, timestamp = null, responseTime = null, model = 'imagen-v4') {
             const messageObj = {
                 sender: 'ai',
@@ -3269,7 +3470,8 @@
                 timestamp: timestamp || new Date().toISOString(),
                 responseTime,
                 type: 'image',
-                model: model
+                model: model,
+                loading: false
             };
             
             currentMessages.push(messageObj);
@@ -3332,16 +3534,44 @@
                         contentHtml = message.content;
                     }
                 } else if (message.type === 'image') {
-                    // Render gambar
-                    const modelInfo = message.model ? ` (${message.model})` : '';
-                    contentHtml = `
-                        <img src="${message.content}" alt="Generated image: ${message.prompt || 'AI Generated Image'}" class="generated-image">
-                        <div class="image-info">
-                            <div><strong>Prompt:</strong> ${message.prompt || 'No prompt available'}</div>
-                            <div><strong>Model:</strong> ${message.model || 'Imagen-v4'}</div>
-                            <div><strong>Generated:</strong> ${timeDisplay}</div>
-                        </div>
-                    `;
+                    // Render gambar dengan skeleton jika masih loading
+                    if (message.loading) {
+                        const ratioClass = getRatioClass(imageSettings.ratio);
+                        contentHtml = `
+                            <div class="image-skeleton-container">
+                                <div class="image-skeleton ${ratioClass}"></div>
+                            </div>
+                            <div class="image-info">
+                                <div><strong>Prompt:</strong> ${message.prompt || 'No prompt available'}</div>
+                                <div><strong>Model:</strong> ${message.model || 'Imagen-v4'}</div>
+                                <div><strong>Status:</strong> <i class="fas fa-spinner fa-spin"></i> Loading image...</div>
+                            </div>
+                        `;
+                    } else if (message.failed) {
+                        contentHtml = `
+                            <div class="image-skeleton-container" style="background-color: rgba(255, 59, 48, 0.1);">
+                                <div style="padding: 2rem; text-align: center; color: #FF3B30;">
+                                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                    <p>Failed to load image</p>
+                                </div>
+                            </div>
+                            <div class="image-info">
+                                <div><strong>Prompt:</strong> ${message.prompt || 'No prompt available'}</div>
+                                <div><strong>Model:</strong> ${message.model || 'Imagen-v4'}</div>
+                                <div><strong>Status:</strong> <span style="color: #FF3B30;">Failed to load</span></div>
+                            </div>
+                        `;
+                    } else {
+                        const modelInfo = message.model ? ` (${message.model})` : '';
+                        contentHtml = `
+                            <img src="${message.content}" alt="Generated image: ${message.prompt || 'AI Generated Image'}" class="generated-image">
+                            <div class="image-info">
+                                <div><strong>Prompt:</strong> ${message.prompt || 'No prompt available'}</div>
+                                <div><strong>Model:</strong> ${message.model || 'Imagen-v4'}</div>
+                                <div><strong>Generated:</strong> ${timeDisplay}</div>
+                            </div>
+                        `;
+                    }
                 }
                 
                 messageEl.innerHTML = `
@@ -3355,7 +3585,7 @@
                             ${message.responseTime ? `<span>• ${message.responseTime}</span>` : ''}
                             ${message.type === 'image' && message.model ? `<span>• ${message.model}</span>` : ''}
                         </div>
-                        ${message.sender === 'ai' ? `
+                        ${message.sender === 'ai' && !message.loading ? `
                         <div class="message-actions">
                             <button class="message-action-btn" onclick="copyMessage(${index})" aria-label="Copy message">
                                 <i class="fas fa-copy"></i>
