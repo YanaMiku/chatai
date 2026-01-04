@@ -689,7 +689,7 @@
             margin-bottom: 0;
         }
         
-        /* Styling untuk kode dengan Highlight.js - DIUBAH */
+        /* Styling untuk kode dengan Highlight.js */
         .message-text pre {
             background-color: #1e1e1e;
             padding: 12px;
@@ -700,60 +700,6 @@
             font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
             font-size: 0.85em;
             position: relative;
-            padding-top: 45px; /* Ruang untuk header */
-        }
-        
-        /* Code block header - BARU */
-        .code-block-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #2d2d2d;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-        
-        .code-language {
-            font-size: 0.75rem;
-            color: #8E8E93;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .code-language i {
-            font-size: 0.7rem;
-        }
-        
-        .copy-code-btn {
-            background-color: #3e3e3e;
-            border: none;
-            color: #8E8E93;
-            padding: 4px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s;
-            outline: none;
-        }
-        
-        .copy-code-btn:hover {
-            background-color: #4a4a4a;
-            color: #FFFFFF;
-        }
-        
-        .copy-code-btn:active {
-            transform: scale(0.95);
         }
         
         .message-text pre code {
@@ -765,7 +711,6 @@
             color: inherit;
             line-height: 1.5;
             display: block;
-            padding-top: 10px; /* Tambah padding atas untuk code */
         }
         
         /* Untuk inline code */
@@ -822,15 +767,13 @@
             flex-wrap: wrap;
         }
         
-        /* iOS Style Chat Input Container - DIUBAH */
+        /* iOS Style Chat Input Container - DIPERBAIKI UNTUK MOBILE */
         .chat-input-container {
             padding: 0.75rem 1rem;
             background-color: #FFFFFF;
             border-top: 0.5px solid rgba(0, 0, 0, 0.1);
             flex-shrink: 0;
             position: relative;
-            /* Tambahan untuk mobile */
-            padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
         }
         
         .input-wrapper {
@@ -1483,36 +1426,44 @@
             .message-text pre {
                 padding: 8px;
                 font-size: 0.8rem;
-                padding-top: 40px; /* Adjust for mobile */
             }
             
             .message-info {
                 font-size: 0.65rem;
             }
             
-            /* PERBAIKAN POSISI INPUT DI MOBILE - DIUBAH */
+            /* PERBAIKAN POSISI INPUT CHAT UNTUK MOBILE */
             .chat-input-container {
-                padding: 0.6rem 0.75rem;
-                padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0.6rem));
+                padding: 0.8rem 0.75rem;
+                padding-bottom: max(0.8rem, env(safe-area-inset-bottom, 0.8rem));
+                background-color: #FFFFFF;
+                border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+                position: sticky;
+                bottom: 0;
+                z-index: 80;
             }
             
             .chat-input {
                 font-size: 0.9rem;
-                padding: 8px 14px;
-                min-height: 36px;
+                padding: 10px 14px;
+                min-height: 38px;
                 border-radius: 18px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             }
             
             .send-button, .image-generate-button {
-                width: 36px;
-                height: 36px;
+                width: 38px;
+                height: 38px;
                 margin-bottom: 0;
+                box-shadow: 0 3px 10px rgba(0, 122, 255, 0.25);
             }
             
             .dropdown-menu {
                 min-width: 160px;
                 left: 0;
                 right: auto;
+                bottom: 100%;
+                margin-bottom: 10px;
             }
             
             .sub-dropdown-menu {
@@ -1536,7 +1487,9 @@
             
             .input-footer {
                 font-size: 0.65rem;
-                margin-top: 0.5rem;
+                margin-top: 0.8rem;
+                padding: 0 0.25rem;
+                line-height: 1.3;
             }
             
             .modal-content {
@@ -1554,24 +1507,12 @@
             }
             
             .toast {
-                bottom: 12px;
+                bottom: max(12px, env(safe-area-inset-bottom, 12px));
                 right: 12px;
                 left: 12px;
                 max-width: calc(100vw - 24px);
                 padding: 8px 14px;
-            }
-            
-            .code-block-header {
-                padding: 6px 10px;
-            }
-            
-            .code-language {
-                font-size: 0.7rem;
-            }
-            
-            .copy-code-btn {
-                font-size: 0.65rem;
-                padding: 3px 6px;
+                z-index: 1100;
             }
         }
         
@@ -1619,6 +1560,7 @@
             
             .chat-messages {
                 padding: 0.5rem;
+                padding-bottom: 1rem;
             }
             
             .message {
@@ -1637,17 +1579,35 @@
             .message-text pre {
                 padding: 7px;
                 font-size: 0.75rem;
-                padding-top: 35px; /* Adjust for small mobile */
             }
             
             .message-text img.generated-image {
                 max-height: 250px;
             }
             
-            /* PERBAIKAN POSISI INPUT DI MOBILE KECIL - DIUBAH */
+            /* PERBAIKAN TAMBAHAN UNTUK INPUT DI MOBILE KECIL */
             .chat-input-container {
-                padding: 0.5rem;
-                padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+                padding: 0.7rem 0.5rem;
+                padding-bottom: max(0.7rem, env(safe-area-inset-bottom, 0.7rem));
+            }
+            
+            .input-wrapper {
+                gap: 8px;
+            }
+            
+            .chat-input {
+                font-size: 0.85rem;
+                padding: 8px 12px;
+                min-height: 36px;
+            }
+            
+            .send-button, .image-generate-button {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .send-button i, .image-generate-button i {
+                font-size: 0.85rem;
             }
             
             .modal-actions {
@@ -1661,20 +1621,6 @@
             
             .history-item {
                 padding: 8px 10px;
-            }
-            
-            .chat-input {
-                font-size: 0.85rem;
-                padding: 7px 12px;
-            }
-            
-            .send-button, .image-generate-button {
-                width: 34px;
-                height: 34px;
-            }
-            
-            .send-button i, .image-generate-button i {
-                font-size: 0.85rem;
             }
             
             .dropdown-menu {
@@ -1699,17 +1645,10 @@
                 }
             }
             
-            .code-block-header {
-                padding: 5px 8px;
-            }
-            
-            .code-language {
-                font-size: 0.65rem;
-            }
-            
-            .copy-code-btn {
+            .input-footer {
                 font-size: 0.6rem;
-                padding: 2px 5px;
+                margin-top: 0.7rem;
+                line-height: 1.4;
             }
         }
         
@@ -1722,9 +1661,16 @@
                 padding: 5px 7px;
             }
             
+            /* PENYESUAIAN TAMBAHAN UNTUK INPUT DI LAYAR SANGAT KECIL */
+            .chat-input-container {
+                padding: 0.6rem 0.4rem;
+                padding-bottom: max(0.6rem, env(safe-area-inset-bottom, 0.6rem));
+            }
+            
             .chat-input {
                 font-size: 0.8rem;
-                padding: 6px 10px;
+                padding: 7px 10px;
+                min-height: 34px;
             }
             
             .message-text {
@@ -1737,8 +1683,9 @@
                 min-height: 80px;
             }
             
-            .chat-input-container {
-                padding-bottom: max(0.4rem, env(safe-area-inset-bottom, 0.4rem));
+            .send-button, .image-generate-button {
+                width: 34px;
+                height: 34px;
             }
         }
         
@@ -1768,7 +1715,7 @@
                 min-height: 80px;
             }
             
-            /* PERBAIKAN POSISI INPUT DI LANDSCAPE - DIUBAH */
+            /* PENYESUAIAN UNTUK LANDSCAPE MODE */
             .chat-input-container {
                 padding: 0.5rem;
                 padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
@@ -1777,11 +1724,12 @@
             .chat-input {
                 min-height: 34px;
                 padding: 6px 12px;
+                font-size: 0.85rem;
             }
             
             .send-button, .image-generate-button {
-                width: 32px;
-                height: 32px;
+                width: 34px;
+                height: 34px;
             }
             
             .welcome-title {
@@ -1792,6 +1740,11 @@
             .welcome-subtitle {
                 font-size: 0.7rem;
                 margin-bottom: 0.8rem;
+            }
+            
+            .input-footer {
+                font-size: 0.6rem;
+                margin-top: 0.6rem;
             }
         }
         
@@ -1830,19 +1783,23 @@
                 background-color: #000000;
             }
             
+            /* DARK MODE UNTUK CHAT INPUT CONTAINER */
             .chat-input-container {
-                background-color: rgba(28, 28, 30, 0.8);
+                background-color: rgba(28, 28, 30, 0.95);
                 border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(20px);
             }
             
             .chat-input {
-                background-color: rgba(44, 44, 46, 0.8);
+                background-color: rgba(44, 44, 46, 0.9);
                 color: #FFFFFF;
-                border-color: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.15);
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
             }
             
             .chat-input:focus {
-                background-color: rgba(58, 58, 60, 0.8);
+                background-color: rgba(58, 58, 60, 0.9);
+                border-color: #0A84FF;
             }
             
             .message.ai .message-text {
@@ -1854,25 +1811,6 @@
             .message-text pre {
                 background-color: #1e1e1e;
                 border-color: rgba(255, 255, 255, 0.1);
-            }
-            
-            /* Dark mode untuk code block header */
-            .code-block-header {
-                background-color: #2d2d2d;
-            }
-            
-            .code-language {
-                color: #8E8E93;
-            }
-            
-            .copy-code-btn {
-                background-color: #3e3e3e;
-                color: #8E8E93;
-            }
-            
-            .copy-code-btn:hover {
-                background-color: #4a4a4a;
-                color: #FFFFFF;
             }
             
             .message-text code:not(pre code) {
@@ -2331,7 +2269,7 @@
     </div>
 
     <script>
-        // Konfigurasi marked untuk menggunakan Highlight.js dan renderer custom
+        // Konfigurasi marked untuk menggunakan Highlight.js
         marked.setOptions({
             highlight: function(code, lang) {
                 if (lang && hljs.getLanguage(lang)) {
@@ -2345,120 +2283,6 @@
             },
             langPrefix: 'hljs language-'
         });
-
-        // Custom renderer untuk blok kode dengan header
-        const renderer = new marked.Renderer();
-        const originalCodeRenderer = renderer.code;
-        
-        renderer.code = function(code, language, isEscaped) {
-            // Deteksi bahasa pemrograman
-            let lang = language || 'text';
-            let langName = lang;
-            let icon = 'fas fa-code';
-            
-            // Mapping ikon berdasarkan bahasa
-            const languageIcons = {
-                'javascript': 'fab fa-js',
-                'js': 'fab fa-js',
-                'python': 'fab fa-python',
-                'py': 'fab fa-python',
-                'java': 'fab fa-java',
-                'html': 'fab fa-html5',
-                'css': 'fab fa-css3',
-                'php': 'fab fa-php',
-                'c': 'fas fa-c',
-                'cpp': 'fas fa-c',
-                'c++': 'fas fa-c',
-                'csharp': 'fas fa-c',
-                'cs': 'fas fa-c',
-                'go': 'fab fa-golang',
-                'rust': 'fas fa-gear',
-                'ruby': 'far fa-gem',
-                'swift': 'fas fa-mobile',
-                'kotlin': 'fas fa-mobile',
-                'typescript': 'fas fa-code',
-                'ts': 'fas fa-code',
-                'bash': 'fas fa-terminal',
-                'shell': 'fas fa-terminal',
-                'sql': 'fas fa-database',
-                'json': 'fas fa-brackets-curly',
-                'xml': 'fas fa-code',
-                'markdown': 'fas fa-markdown',
-                'yaml': 'fas fa-file-code',
-                'yml': 'fas fa-file-code'
-            };
-            
-            // Format nama bahasa untuk ditampilkan
-            const languageNames = {
-                'js': 'JavaScript',
-                'javascript': 'JavaScript',
-                'py': 'Python',
-                'python': 'Python',
-                'java': 'Java',
-                'html': 'HTML',
-                'css': 'CSS',
-                'php': 'PHP',
-                'c': 'C',
-                'cpp': 'C++',
-                'c++': 'C++',
-                'csharp': 'C#',
-                'cs': 'C#',
-                'go': 'Go',
-                'golang': 'Go',
-                'rust': 'Rust',
-                'ruby': 'Ruby',
-                'swift': 'Swift',
-                'kotlin': 'Kotlin',
-                'typescript': 'TypeScript',
-                'ts': 'TypeScript',
-                'bash': 'Bash',
-                'shell': 'Shell',
-                'sh': 'Shell',
-                'sql': 'SQL',
-                'json': 'JSON',
-                'xml': 'XML',
-                'markdown': 'Markdown',
-                'md': 'Markdown',
-                'yaml': 'YAML',
-                'yml': 'YAML',
-                'text': 'Text'
-            };
-            
-            // Set icon dan nama bahasa
-            if (languageIcons[lang.toLowerCase()]) {
-                icon = languageIcons[lang.toLowerCase()];
-            }
-            
-            if (languageNames[lang.toLowerCase()]) {
-                langName = languageNames[lang.toLowerCase()];
-            } else {
-                // Kapitalisasi huruf pertama jika tidak ada di mapping
-                langName = lang.charAt(0).toUpperCase() + lang.slice(1);
-            }
-            
-            // Generate unique ID untuk blok kode
-            const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
-            
-            // Return HTML dengan header dan tombol copy
-            return `
-                <div class="code-block-container">
-                    <div class="code-block-header">
-                        <div class="code-language">
-                            <i class="${icon}"></i>
-                            <span>${langName}</span>
-                        </div>
-                        <button class="copy-code-btn" onclick="copyCodeBlock('${codeId}')" data-code="${encodeURIComponent(code)}" aria-label="Copy code">
-                            <i class="fas fa-copy"></i>
-                            <span>Copy</span>
-                        </button>
-                    </div>
-                    <pre><code id="${codeId}" class="hljs language-${lang}">${hljs.highlightAuto(code).value}</code></pre>
-                </div>
-            `;
-        };
-        
-        // Terapkan renderer custom
-        marked.setOptions({ renderer: renderer });
 
         // Router untuk menangani URL hash
         class HashRouter {
@@ -2728,54 +2552,6 @@
                 default:
                     return 'skeleton-ratio-16-9';
             }
-        }
-
-        // Fungsi untuk menyalin kode dari blok kode
-        function copyCodeBlock(codeId) {
-            const codeElement = document.getElementById(codeId);
-            if (!codeElement) return;
-            
-            // Ambil teks kode asli (tanpa highlight)
-            let codeText = codeElement.textContent;
-            
-            // Decode HTML entities
-            const textarea = document.createElement('textarea');
-            textarea.innerHTML = codeText;
-            codeText = textarea.value;
-            
-            navigator.clipboard.writeText(codeText).then(() => {
-                showToast('Code copied to clipboard!', false, 'success');
-                
-                // Ubah tombol sementara untuk konfirmasi
-                const copyBtn = document.querySelector(`button[onclick*="${codeId}"]`);
-                if (copyBtn) {
-                    const originalHTML = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<i class="fas fa-check"></i><span>Copied!</span>';
-                    copyBtn.style.backgroundColor = '#34C759';
-                    copyBtn.style.color = 'white';
-                    
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalHTML;
-                        copyBtn.style.backgroundColor = '';
-                        copyBtn.style.color = '';
-                    }, 2000);
-                }
-            }).catch(err => {
-                console.error('Failed to copy code:', err);
-                // Fallback method
-                try {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = codeText;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    showToast('Code copied to clipboard!', false, 'success');
-                } catch (fallbackErr) {
-                    console.error('Fallback copy failed:', fallbackErr);
-                    showToast('Failed to copy code', true);
-                }
-            });
         }
 
         // Inisialisasi router
@@ -3885,7 +3661,7 @@
                 chatMessagesEl.appendChild(messageEl);
             });
             
-            // Apply syntax highlighting to all code blocks (sudah dilakukan oleh marked)
+            // Apply syntax highlighting to all code blocks
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
@@ -3967,7 +3743,7 @@
             }
         }
         
-        // Copy message to clipboard
+        // Copy message to clipboard - FIXED VERSION
         function copyMessage(messageIndex) {
             const message = currentMessages[messageIndex];
             if (message) {
