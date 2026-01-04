@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Chat AI - NekoLabs API</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tambahkan Highlight.js untuk syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
     <style>
@@ -332,7 +335,7 @@
             border-color: #007AFF;
         }
         
-        /* TOMBOL TITIK TIGA DAN DROPDOWN ACTIONS */
+        /* TOMBOL HAPUS SAJA */
         .history-item-actions {
             position: relative;
             display: flex;
@@ -363,6 +366,7 @@
         
         .more-actions-btn:hover {
             background-color: rgba(0, 0, 0, 0.05);
+            color: #FF3B30;
         }
         
         .history-item.active .more-actions-btn {
@@ -370,59 +374,9 @@
             color: #007AFF;
         }
         
-        .actions-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: #FFFFFF;
-            border: 0.5px solid rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 6px;
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            min-width: 120px;
-            margin-top: 4px;
-        }
-        
-        .history-item-actions.active .actions-dropdown {
-            display: flex;
-        }
-        
-        .action-dropdown-btn {
-            background: none;
-            border: none;
-            color: #000000;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-            outline: none;
-            font-size: 0.85rem;
-            text-align: left;
-            width: 100%;
-        }
-        
-        .action-dropdown-btn:hover {
-            background-color: #F2F2F7;
-        }
-        
-        .action-dropdown-btn.share-btn {
-            color: #007AFF;
-        }
-        
-        .action-dropdown-btn.delete-btn {
+        .history-item.active .more-actions-btn:hover {
+            background-color: rgba(255, 59, 48, 0.1);
             color: #FF3B30;
-        }
-        
-        .action-dropdown-btn i {
-            font-size: 0.8rem;
-            width: 16px;
         }
         
         .sidebar-footer {
@@ -681,18 +635,32 @@
             margin-bottom: 0;
         }
         
+        /* Styling untuk kode dengan Highlight.js */
         .message-text pre {
-            background-color: #F2F2F7;
-            padding: 10px;
+            background-color: #1e1e1e;
+            padding: 12px;
             border-radius: 10px;
             overflow-x: auto;
             margin: 0.5rem 0;
-            border: 0.5px solid rgba(0, 0, 0, 0.05);
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
             font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
             font-size: 0.85em;
+            position: relative;
         }
         
-        .message-text code {
+        .message-text pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            line-height: 1.5;
+            display: block;
+        }
+        
+        /* Untuk inline code */
+        .message-text code:not(pre code) {
             background-color: #F2F2F7;
             padding: 2px 5px;
             border-radius: 5px;
@@ -1478,22 +1446,6 @@
                 max-width: calc(100vw - 24px);
                 padding: 8px 14px;
             }
-            
-            /* Fix for history item actions dropdown on mobile */
-            .actions-dropdown {
-                position: fixed;
-                top: auto;
-                bottom: 50%;
-                right: 10px;
-                transform: translateY(50%);
-                margin-top: 0;
-                min-width: 140px;
-                z-index: 200;
-            }
-            
-            .history-item-actions.active .actions-dropdown {
-                display: flex;
-            }
         }
         
         @media (max-width: 480px) {
@@ -1591,11 +1543,6 @@
                 font-size: 0.85rem;
             }
             
-            .actions-dropdown {
-                min-width: 120px;
-                right: 5px;
-            }
-            
             .dropdown-menu {
                 min-width: 140px;
             }
@@ -1641,11 +1588,6 @@
             .suggestion-card {
                 padding: 0.7rem;
                 min-height: 80px;
-            }
-            
-            .actions-dropdown {
-                right: 0;
-                min-width: 110px;
             }
         }
         
@@ -1757,11 +1699,11 @@
             }
             
             .message-text pre {
-                background-color: rgba(44, 44, 46, 0.8);
+                background-color: #1e1e1e;
                 border-color: rgba(255, 255, 255, 0.1);
             }
             
-            .message-text code {
+            .message-text code:not(pre code) {
                 background-color: rgba(44, 44, 46, 0.8);
             }
             
@@ -1836,6 +1778,7 @@
             
             .more-actions-btn:hover {
                 background-color: rgba(255, 255, 255, 0.1);
+                color: #FF453A;
             }
             
             .history-item.active .more-actions-btn {
@@ -1843,25 +1786,8 @@
                 color: #0A84FF;
             }
             
-            .actions-dropdown {
-                background-color: rgba(44, 44, 46, 0.98);
-                border-color: rgba(255, 255, 255, 0.1);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            }
-            
-            .action-dropdown-btn {
-                color: #FFFFFF;
-            }
-            
-            .action-dropdown-btn:hover {
-                background-color: rgba(58, 58, 60, 0.8);
-            }
-            
-            .action-dropdown-btn.share-btn {
-                color: #0A84FF;
-            }
-            
-            .action-dropdown-btn.delete-btn {
+            .history-item.active .more-actions-btn:hover {
+                background-color: rgba(255, 69, 58, 0.1);
                 color: #FF453A;
             }
             
@@ -2015,10 +1941,6 @@
                 <i class="fas fa-plus"></i>
                 <span>New Chat</span>
             </button>
-            <button class="btn btn-secondary" onclick="shareCurrentChat()">
-                <i class="fas fa-share"></i>
-                <span>Share</span>
-            </button>
             <button class="btn btn-danger" onclick="deleteCurrentChat()">
                 <i class="fas fa-trash-alt"></i>
                 <span>Delete</span>
@@ -2154,28 +2076,6 @@
         </div>
     </div>
 
-    <!-- Share Modal -->
-    <div class="modal" id="shareModal">
-        <div class="modal-content">
-            <div class="modal-title">
-                <i class="fas fa-share"></i>
-                Share Chat
-            </div>
-            <div class="modal-body">
-                <p>Copy the URL below to share this chat:</p>
-                <input type="text" class="modal-input" id="shareUrlInput" readonly aria-label="Share URL">
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeShareModal()">
-                    Close
-                </button>
-                <button class="btn btn-primary" onclick="copyShareUrl()">
-                    <i class="fas fa-copy"></i> Copy URL
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Delete Modal -->
     <div class="modal" id="deleteModal">
         <div class="modal-content">
@@ -2209,19 +2109,10 @@
                     <label for="imageRatioSelect">Aspect Ratio</label>
                     <select class="modal-input" id="imageRatioSelect">
                         <option value="1:1">1:1 (Square)</option>
-                        <option value="4:3">4:3 (Standard)</option>
+                        <option value="3:4">3:4 (Portrait)</option>
+                        <option value="4:3">4:3 (Landscape)</option>
                         <option value="16:9" selected>16:9 (Widescreen)</option>
-                        <option value="9:16">9:16 (Portrait)</option>
-                        <option value="3:2">3:2 (Classic)</option>
-                        <option value="2:3">2:3 (Vertical)</option>
-                    </select>
-                </div>
-                <div class="setting-item" style="margin-top: 1rem;">
-                    <label for="imageQualitySelect">Image Quality</label>
-                    <select class="modal-input" id="imageQualitySelect">
-                        <option value="fast">Fast (Quick generation)</option>
-                        <option value="standard" selected>Standard (Balanced)</option>
-                        <option value="high">High (Better quality)</option>
+                        <option value="9:16">9:16 (Vertical Widescreen)</option>
                     </select>
                 </div>
                 <div class="setting-item" style="margin-top: 1rem;">
@@ -2251,6 +2142,21 @@
     </div>
 
     <script>
+        // Konfigurasi marked untuk menggunakan Highlight.js
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return hljs.highlight(code, { language: lang }).value;
+                    } catch (err) {
+                        console.warn('Highlight.js error:', err);
+                    }
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            langPrefix: 'hljs language-'
+        });
+
         // Router untuk menangani URL hash
         class HashRouter {
             constructor() {
@@ -2339,6 +2245,170 @@
             }
         }
 
+        // Fungsi untuk mendeteksi apakah pesan mengandung permintaan generate gambar
+        function containsGenerateImageCommand(message) {
+            if (!message) return false;
+            
+            const lowerMessage = message.toLowerCase().trim();
+            
+            // Daftar kata kunci untuk generate gambar
+            const keywords = [
+                'generate image',
+                'buatkan gambar',
+                'buat gambar',
+                'buatkan foto',
+                'buat foto',
+                'generate foto',
+                'buatkan ilustrasi',
+                'buat ilustrasi',
+                'generate ilustrasi',
+                'buatkan gambar tentang',
+                'buat gambar tentang',
+                'generate gambar tentang',
+                'buatkan foto tentang',
+                'buat foto tentang',
+                'generate foto tentang',
+                'gambar',
+                'foto',
+                'ilustrasi',
+                'generate',
+                'buat',
+                'buatkan',
+                'create image',
+                'create gambar',
+                'create foto',
+                'create ilustrasi',
+                'ciptakan gambar',
+                'ciptakan foto',
+                'ciptakan ilustrasi',
+                'produksi gambar',
+                'produksi foto',
+                'produksi ilustrasi'
+            ];
+            
+            // Cek apakah pesan mengandung salah satu keyword
+            for (const keyword of keywords) {
+                if (lowerMessage.includes(keyword.toLowerCase())) {
+                    // Cek apakah ini benar-benar permintaan generate gambar
+                    // Bukan hanya kata "gambar" saja dalam konteks lain
+                    if (keyword.length <= 3) {
+                        // Untuk kata pendek, pastikan ini konteks generate gambar
+                        const words = lowerMessage.split(' ');
+                        const keywordIndex = lowerMessage.indexOf(keyword);
+                        
+                        // Jika keyword adalah kata pertama atau didahului dengan kata perintah
+                        if (keywordIndex === 0 || 
+                            lowerMessage.startsWith('tolong ') || 
+                            lowerMessage.startsWith('please ') || 
+                            lowerMessage.startsWith('bisa ') ||
+                            lowerMessage.startsWith('mohon ') ||
+                            lowerMessage.startsWith('bantu ')) {
+                            return true;
+                        }
+                    } else {
+                        // Untuk keyword panjang, langsung return true
+                        return true;
+                    }
+                }
+            }
+            
+            // Cek pola spesifik
+            const patterns = [
+                /^generate\s+/i,
+                /^buat(kan)?\s+(gambar|foto|ilustrasi)/i,
+                /^create\s+(image|gambar|foto|ilustrasi)/i,
+                /(gambar|foto|ilustrasi)\s+(dari|tentang|of|about)\s+/i,
+                /(buat|create|generate)\s+(saya|aku|me|a|an)\s+(gambar|foto|ilustrasi)/i
+            ];
+            
+            for (const pattern of patterns) {
+                if (pattern.test(lowerMessage)) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // Fungsi untuk mengekstrak prompt dari pesan yang mengandung perintah generate gambar
+        function extractImagePrompt(message) {
+            if (!message) return '';
+            
+            const lowerMessage = message.toLowerCase();
+            let prompt = message;
+            
+            // Daftar kata kunci untuk dihapus dari awal pesan
+            const removeKeywords = [
+                'generate image',
+                'buatkan gambar',
+                'buat gambar',
+                'buatkan foto',
+                'buat foto',
+                'generate foto',
+                'buatkan ilustrasi',
+                'buat ilustrasi',
+                'generate ilustrasi',
+                'generate',
+                'buat',
+                'buatkan',
+                'create image',
+                'create gambar',
+                'create foto',
+                'create ilustrasi',
+                'ciptakan gambar',
+                'ciptakan foto',
+                'ciptakan ilustrasi',
+                'produksi gambar',
+                'produksi foto',
+                'produksi ilustrasi',
+                'tolong',
+                'please',
+                'bisa',
+                'mohon',
+                'bantu',
+                'saya',
+                'aku',
+                'dari',
+                'tentang',
+                'of',
+                'about',
+                'sebuah',
+                'a',
+                'an',
+                'the'
+            ];
+            
+            // Urutkan dari yang terpanjang ke terpendek untuk menghindari konflik
+            removeKeywords.sort((a, b) => b.length - a.length);
+            
+            // Hapus kata kunci dari awal pesan
+            for (const keyword of removeKeywords) {
+                if (lowerMessage.startsWith(keyword.toLowerCase() + ' ')) {
+                    prompt = prompt.substring(keyword.length).trim();
+                    break;
+                }
+            }
+            
+            // Hapus kata "gambar", "foto", "ilustrasi" dari awal jika masih ada
+            const imageWords = ['gambar', 'foto', 'ilustrasi', 'image', 'picture', 'photo'];
+            for (const word of imageWords) {
+                if (prompt.toLowerCase().startsWith(word + ' ')) {
+                    prompt = prompt.substring(word.length).trim();
+                    break;
+                }
+            }
+            
+            // Hapus tanda baca di awal
+            prompt = prompt.replace(/^[.,!?;:\s]+/, '');
+            
+            // Kapitalisasi huruf pertama
+            if (prompt.length > 0) {
+                prompt = prompt.charAt(0).toUpperCase() + prompt.slice(1);
+            }
+            
+            return prompt || 'an image';
+        }
+
         // Inisialisasi router
         const router = new HashRouter();
         
@@ -2349,11 +2419,9 @@
         let isGeneratingTitle = false;
         let isSidebarOpen = false;
         let isSidebarCollapsed = false;
-        let activeActionDropdown = null;
         let selectedImageModel = 'imagen-v4'; // Default model
         let imageSettings = {
-            ratio: '16:9',
-            quality: 'standard'
+            ratio: '16:9'
         };
         
         // Initialize
@@ -2402,12 +2470,6 @@
             
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
-                // Close action dropdown when clicking outside
-                if (activeActionDropdown && !e.target.closest('.history-item-actions')) {
-                    activeActionDropdown.classList.remove('active');
-                    activeActionDropdown = null;
-                }
-                
                 // Close image dropdown when clicking outside
                 if (!e.target.closest('.image-dropdown')) {
                     closeImageDropdown();
@@ -2416,11 +2478,6 @@
             
             // Close dropdowns with escape key
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && activeActionDropdown) {
-                    activeActionDropdown.classList.remove('active');
-                    activeActionDropdown = null;
-                }
-                
                 // Close image dropdown with escape key
                 if (e.key === 'Escape') {
                     closeImageDropdown();
@@ -2462,12 +2519,6 @@
             imageGenerateButton.addEventListener('click', function(e) {
                 e.stopPropagation();
                 imageDropdownMenu.classList.toggle('show');
-                
-                // Close other dropdowns
-                if (activeActionDropdown) {
-                    activeActionDropdown.classList.remove('active');
-                    activeActionDropdown = null;
-                }
             });
             
             // Prevent sub-dropdown from closing when clicking inside
@@ -2605,12 +2656,6 @@
                 toggleSidebar();
             }
             
-            // Close active dropdown
-            if (activeActionDropdown) {
-                activeActionDropdown.classList.remove('active');
-                activeActionDropdown = null;
-            }
-            
             // Close image dropdown
             closeImageDropdown();
             
@@ -2686,19 +2731,9 @@
                         </div>
                     </div>
                     <div class="history-item-actions">
-                        <button class="more-actions-btn" onclick="toggleActionsDropdown(event, '${sessionId}')" aria-label="More actions">
-                            <i class="fas fa-ellipsis-v"></i>
+                        <button class="more-actions-btn delete-btn" onclick="deleteChat('${sessionId}', event)" aria-label="Delete chat">
+                            <i class="fas fa-trash-alt"></i>
                         </button>
-                        <div class="actions-dropdown">
-                            <button class="action-dropdown-btn share-btn" onclick="shareChat('${sessionId}', event)" aria-label="Share chat">
-                                <i class="fas fa-share"></i>
-                                <span>Share</span>
-                            </button>
-                            <button class="action-dropdown-btn delete-btn" onclick="deleteChat('${sessionId}', event)" aria-label="Delete chat">
-                                <i class="fas fa-trash-alt"></i>
-                                <span>Delete</span>
-                            </button>
-                        </div>
                     </div>
                 `;
                 
@@ -2719,54 +2754,8 @@
             }
         }
         
-        // Toggle actions dropdown - FIXED VERSION
-        function toggleActionsDropdown(event, sessionId) {
-            event.stopPropagation();
-            event.preventDefault();
-            
-            const actionsContainer = event.target.closest('.history-item-actions');
-            
-            // Close other dropdowns
-            if (activeActionDropdown && activeActionDropdown !== actionsContainer) {
-                activeActionDropdown.classList.remove('active');
-            }
-            
-            // Close image dropdown
-            closeImageDropdown();
-            
-            // Toggle current dropdown
-            actionsContainer.classList.toggle('active');
-            
-            if (actionsContainer.classList.contains('active')) {
-                activeActionDropdown = actionsContainer;
-                
-                // On mobile, adjust dropdown position
-                if (window.innerWidth <= 768) {
-                    const dropdown = actionsContainer.querySelector('.actions-dropdown');
-                    const rect = actionsContainer.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-                    
-                    // Position dropdown in the middle of the screen
-                    dropdown.style.position = 'fixed';
-                    dropdown.style.top = '50%';
-                    dropdown.style.transform = 'translateY(-50%)';
-                    dropdown.style.right = '10px';
-                    dropdown.style.left = 'auto';
-                    dropdown.style.bottom = 'auto';
-                }
-            } else {
-                activeActionDropdown = null;
-            }
-        }
-        
         // Create new chat
         function newChat() {
-            // Close active dropdown
-            if (activeActionDropdown) {
-                activeActionDropdown.classList.remove('active');
-                activeActionDropdown = null;
-            }
-            
             // Close image dropdown
             closeImageDropdown();
             
@@ -2792,12 +2781,6 @@
             
             if (!allChats[sessionId]) return;
             
-            // Close dropdown
-            if (activeActionDropdown) {
-                activeActionDropdown.classList.remove('active');
-                activeActionDropdown = null;
-            }
-            
             // Close image dropdown
             closeImageDropdown();
             
@@ -2815,12 +2798,6 @@
             if (chatsWithMessages.length === 0) {
                 showToast('No chats to delete', true);
                 return;
-            }
-            
-            // Close active dropdown
-            if (activeActionDropdown) {
-                activeActionDropdown.classList.remove('active');
-                activeActionDropdown = null;
             }
             
             // Close image dropdown
@@ -2937,15 +2914,12 @@
             }
         }
         
-        // Send message
+        // Send message dengan deteksi otomatis untuk generate gambar
         async function sendMessage() {
             const inputEl = document.getElementById('messageInput');
             const message = inputEl.value.trim();
             
             if (!message) return;
-            
-            // Add user message to chat
-            addMessageToChat(message, 'user');
             
             // Clear input
             inputEl.value = '';
@@ -2953,6 +2927,29 @@
             
             // Close image dropdown
             closeImageDropdown();
+            
+            // Cek apakah pesan mengandung permintaan generate gambar
+            if (containsGenerateImageCommand(message)) {
+                // Ekstrak prompt dari pesan
+                const imagePrompt = extractImagePrompt(message);
+                
+                // Tambahkan pesan user ke chat
+                addMessageToChat(message, 'user');
+                
+                // Jika prompt kosong, minta klarifikasi
+                if (!imagePrompt || imagePrompt === 'an image') {
+                    addMessageToChat('What would you like me to generate? Please describe the image you want.', 'ai', new Date().toISOString(), '0ms');
+                    return;
+                }
+                
+                // Generate gambar dengan prompt yang diekstrak
+                await generateImageFromPrompt(imagePrompt, message);
+                return;
+            }
+            
+            // Jika bukan permintaan generate gambar, lanjutkan dengan chat biasa
+            // Add user message to chat
+            addMessageToChat(message, 'user');
             
             // Show typing indicator
             showTypingIndicator();
@@ -2994,25 +2991,12 @@
             }
         }
         
-        // Generate image
-        async function generateImage() {
-            const inputEl = document.getElementById('messageInput');
-            const prompt = inputEl.value.trim();
-            
+        // Generate image dari prompt yang diberikan
+        async function generateImageFromPrompt(prompt, originalMessage = null) {
             if (!prompt) {
                 showToast('Please enter a prompt for the image', true);
                 return;
             }
-            
-            // Add user message to chat
-            addMessageToChat(prompt, 'user');
-            
-            // Clear input
-            inputEl.value = '';
-            inputEl.style.height = 'auto';
-            
-            // Close image dropdown
-            closeImageDropdown();
             
             // Show image generating indicator
             showImageGeneratingIndicator();
@@ -3033,6 +3017,7 @@
                 console.log('Generating image with URL:', apiUrl);
                 console.log('Using model:', selectedImageModel);
                 console.log('Settings:', imageSettings);
+                console.log('Prompt:', prompt);
                 
                 // Send request to API
                 const response = await fetch(apiUrl);
@@ -3053,7 +3038,7 @@
                     
                     // Generate title for the chat based on prompt (only for first message)
                     if (currentMessages.length === 2) { // User message + Image response
-                        generateTitleForChat(prompt, prompt);
+                        generateTitleForChat(prompt, originalMessage || prompt);
                     }
                     
                     // Show success toast
@@ -3074,6 +3059,30 @@
                 // Show error toast
                 showToast('Failed to generate image. Please try again.', true);
             }
+        }
+        
+        // Generate image dari tombol (menggunakan input field)
+        async function generateImage() {
+            const inputEl = document.getElementById('messageInput');
+            const prompt = inputEl.value.trim();
+            
+            if (!prompt) {
+                showToast('Please enter a prompt for the image', true);
+                return;
+            }
+            
+            // Add user message to chat
+            addMessageToChat(prompt, 'user');
+            
+            // Clear input
+            inputEl.value = '';
+            inputEl.style.height = 'auto';
+            
+            // Close image dropdown
+            closeImageDropdown();
+            
+            // Generate gambar
+            await generateImageFromPrompt(prompt, prompt);
         }
         
         // Select image model
@@ -3365,6 +3374,11 @@
                 
                 chatMessagesEl.appendChild(messageEl);
             });
+            
+            // Apply syntax highlighting to all code blocks
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
         }
         
         // Show typing indicator
@@ -3511,68 +3525,6 @@
             showToast('Image downloaded!', false, 'success');
         }
         
-        // Share current chat
-        function shareCurrentChat() {
-            if (!currentSessionId) return;
-            
-            const shareUrl = getChatUrl(currentSessionId);
-            document.getElementById('shareUrlInput').value = shareUrl;
-            document.getElementById('shareModal').classList.add('active');
-        }
-        
-        // Share specific chat
-        function shareChat(sessionId, event) {
-            if (event) event.stopPropagation();
-            
-            // Close dropdown
-            if (activeActionDropdown) {
-                activeActionDropdown.classList.remove('active');
-                activeActionDropdown = null;
-            }
-            
-            // Close image dropdown
-            closeImageDropdown();
-            
-            const shareUrl = getChatUrl(sessionId);
-            document.getElementById('shareUrlInput').value = shareUrl;
-            document.getElementById('shareModal').classList.add('active');
-        }
-        
-        // Get chat URL
-        function getChatUrl(sessionId) {
-            // Menggunakan base URL dari halaman saat ini
-            const baseUrl = window.location.origin + window.location.pathname;
-            return `${baseUrl}#/chat/${sessionId}`;
-        }
-        
-        // Copy share URL to clipboard
-        function copyShareUrl() {
-            const shareUrlInput = document.getElementById('shareUrlInput');
-            shareUrlInput.select();
-            shareUrlInput.setSelectionRange(0, 99999); // For mobile devices
-            
-            navigator.clipboard.writeText(shareUrlInput.value).then(() => {
-                showToast('Chat URL copied to clipboard!', false, 'success');
-                closeShareModal();
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-                // Fallback method
-                try {
-                    document.execCommand('copy');
-                    showToast('Chat URL copied to clipboard!', false, 'success');
-                    closeShareModal();
-                } catch (fallbackErr) {
-                    console.error('Fallback copy failed:', fallbackErr);
-                    showToast('Failed to copy URL', true);
-                }
-            });
-        }
-        
-        // Close share modal
-        function closeShareModal() {
-            document.getElementById('shareModal').classList.remove('active');
-        }
-        
         // Show image settings modal
         function showImageSettings() {
             closeImageDropdown();
@@ -3587,10 +3539,8 @@
         // Save image settings
         function saveImageSettings() {
             const ratioSelect = document.getElementById('imageRatioSelect');
-            const qualitySelect = document.getElementById('imageQualitySelect');
             
             imageSettings.ratio = ratioSelect.value;
-            imageSettings.quality = qualitySelect.value;
             
             // Save to localStorage
             localStorage.setItem('imageSettings', JSON.stringify(imageSettings));
@@ -3602,10 +3552,8 @@
         // Update image settings UI
         function updateImageSettingsUI() {
             const ratioSelect = document.getElementById('imageRatioSelect');
-            const qualitySelect = document.getElementById('imageQualitySelect');
             
             ratioSelect.value = imageSettings.ratio;
-            qualitySelect.value = imageSettings.quality;
         }
         
         // Show toast notification
@@ -3655,12 +3603,6 @@
         }
         
         // Handle clicks outside modals to close them
-        document.getElementById('shareModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeShareModal();
-            }
-        });
-        
         document.getElementById('deleteModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDeleteModal();
@@ -3701,15 +3643,8 @@
             
             // Escape untuk close modals dan sidebar
             if (e.key === 'Escape') {
-                closeShareModal();
                 closeDeleteModal();
                 closeImageSettings();
-                
-                // Close active dropdown
-                if (activeActionDropdown) {
-                    activeActionDropdown.classList.remove('active');
-                    activeActionDropdown = null;
-                }
                 
                 // Close image dropdown
                 closeImageDropdown();
